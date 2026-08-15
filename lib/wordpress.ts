@@ -2,7 +2,7 @@ import { BannerAd, HomePagePosts } from "./type";
 import { transliterateSlug } from "./transliterate";
 
 const API_URL =
-  process.env.API_URL || "https://cms.expressnepal.com/?graphql";
+  process.env.API_URL || "https://cms.expressnepal.com/graphql";
 
 export interface FeaturedImage {
   sourceUrl: string;
