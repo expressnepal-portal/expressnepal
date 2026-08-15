@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const API_URL = process.env.API_URL || "https://cms.ktmpost.com/?graphql";
+const API_URL = process.env.API_URL || "https://cms.expressnepal.com/?graphql";
 
 export async function GET(request: Request) {
   try {
