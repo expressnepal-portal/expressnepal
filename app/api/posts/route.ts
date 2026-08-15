@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 const API_URL = process.env.API_URL || "https://cms.expressnepal.com/?graphql";
 
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -66,7 +67,7 @@ export async function GET(request: Request) {
       if (post.featuredImage?.node?.sourceUrl) {
         let imageUrl = post.featuredImage.node.sourceUrl;
         if (imageUrl.startsWith('/')) {
-          imageUrl = `http://cms.ktmpost.com${imageUrl}`;
+          imageUrl = `http://cms.expressnepal.com${imageUrl}`;
         }
         post.featuredImage.node.sourceUrl = imageUrl;
       }
@@ -80,7 +81,7 @@ export async function GET(request: Request) {
           if (match[1]) {
             let imageUrl = match[1];
             if (imageUrl.startsWith('/')) {
-              imageUrl = `http://cms.ktmpost.com${imageUrl}`;
+              imageUrl = `http://cms.expressnepal.com${imageUrl}`;
             }
             images.push(imageUrl);
           }
