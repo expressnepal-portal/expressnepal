@@ -4,32 +4,32 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "news.nepalvoices.com",
+        hostname: "expressnepal.com",
         pathname: "/**",
       },
       {
         protocol: "http",
-        hostname: "cms.bodhiberry.com",
+        hostname: "cms.expressnepal.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "cms.bodhiberry.com",
+        hostname: "cms.expressnepal.com",
         pathname: "/**",
       },
       {
         protocol: "http",
-        hostname: "cms.ktmpost.com",
+        hostname: "cms.expressnepal.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "cms.ktmpost.com",
+        hostname: "cms.expressnepal.com",
         pathname: "/**",
       },
       {
         protocol: "https",
-        hostname: "www.ktmpost.com",
+        hostname: "www.expressnepal.com",
         pathname: "/**",
       },
       {
