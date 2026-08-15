@@ -1,0 +1,394 @@
+@import "tailwindcss";
+
+/* ============================
+   Custom Theme & Utilities
+   ============================ */
+
+@theme {
+  /* Custom colors */
+  --color-nepal-orange: #E93B32;
+  --color-nepal-black: #000000;
+  --color-nepal-gray-dark: #333333;
+  --color-nepal-gray-light: #666666;
+  --color-nepal-red: #DC241F;
+  --color-nepal-blue: #003893;
+}
+
+/* ============================
+   Base Styles
+   ============================ */
+
+:root {
+  --header-height: 100px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 100px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --header-height: 130px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-mukta), system-ui, -apple-system, sans-serif;
+  line-height: 1.7;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Typography Base Rules */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-mukta), system-ui, -apple-system, sans-serif;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+h1 {
+  font-size: clamp(2.1875rem, 5vw + 1.25rem, 3.75rem);
+}
+
+h2 {
+  font-size: clamp(1.5rem, 3vw + 1rem, 2.25rem);
+}
+
+h3 {
+  font-size: clamp(0.9375rem, 1.5vw + 0.75rem, 1.3125rem);
+}
+
+/* Devanagari Font Helper Classes */
+.font-mukta {
+  font-family: var(--font-mukta), system-ui, -apple-system, sans-serif;
+}
+
+.font-nepali-serif {
+  font-family: var(--font-noto-serif-devanagari), serif;
+  line-height: 1.60;
+}
+
+/* ============================
+   Custom Utility Classes
+   ============================ */
+
+/* Subtle Newspaper Background */
+.newspaper-background {
+  background-color: #f8f9fa !important;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-size: 100% 24px, 24px 100%, 400px 400px;
+  background-position: 0 0, 0 0, 0 0;
+  background-blend-mode: multiply;
+  position: relative;
+}
+
+.newspaper-background::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23000000' fill-opacity='0.02' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-size: 300px 300px;
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.paper-background {
+  background-color: #f9f7f1 !important;
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, .03) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, .03) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+  position: relative;
+}
+
+.subtle-paper {
+  background-color: #f8f9fa !important;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0.01) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(0, 0, 0, 0.01) 0%, transparent 20%);
+  background-size: 100% 100%;
+}
+
+/* Mobile-safe padding */
+.px-mobile-safe {
+  padding-left: max(1.25rem, env(safe-area-inset-left, 1.25rem));
+  padding-right: max(1.25rem, env(safe-area-inset-right, 1.25rem));
+}
+
+@media (min-width: 640px) {
+  .px-mobile-safe {
+    padding-left: max(2rem, env(safe-area-inset-left, 2rem));
+    padding-right: max(2rem, env(safe-area-inset-right, 2rem));
+  }
+}
+
+@media (min-width: 768px) {
+  .px-mobile-safe {
+    padding-left: max(2.5rem, env(safe-area-inset-left, 2.5rem));
+    padding-right: max(2.5rem, env(safe-area-inset-right, 2.5rem));
+  }
+}
+
+@media (min-width: 1024px) {
+  .px-mobile-safe {
+    padding-left: max(3.5rem, env(safe-area-inset-left, 3.5rem));
+    padding-right: max(3.5rem, env(safe-area-inset-right, 3.5rem));
+  }
+}
+
+@media (min-width: 1280px) {
+  .px-mobile-safe {
+    padding-left: max(4.5rem, env(safe-area-inset-left, 4.5rem));
+    padding-right: max(4.5rem, env(safe-area-inset-right, 4.5rem));
+  }
+}
+
+/* ============================================================
+   NEWS PORTAL PARAGRAPH STYLES
+   ============================================================ */
+
+@utility news-para-lead {
+  font-family: var(--font-mukta), system-ui, sans-serif;
+  font-size: clamp(1.125rem, 1.2vw + 0.875rem, 1.35rem);
+  line-height: 1.6;
+  font-weight: 500;
+  color: #1f2937;
+  margin-bottom: 1.25rem;
+}
+
+@utility news-para-body {
+  font-family: var(--font-mukta), system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  font-weight: 400;
+  color: var(--color-nepal-gray-dark);
+  margin-bottom: 1.25rem;
+}
+
+@utility news-para-excerpt {
+  font-family: var(--font-mukta), system-ui, sans-serif;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  font-weight: 400;
+  color: var(--color-nepal-gray-light);
+}
+
+@utility news-para-editorial {
+  font-family: var(--font-noto-serif-devanagari), Georgia, serif;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  font-weight: 400;
+  color: #262626;
+  margin-bottom: 1.5rem;
+}
+
+/* ============================
+   WordPress Content Formatting (.prose)
+   ============================ */
+
+.prose p:empty,
+.prose p:has(> br:only-child) {
+  min-height: 1.2em;
+  display: block;
+}
+
+.prose p:only-child {
+  margin-top: 0;
+}
+
+.prose br {
+  display: block;
+  content: "";
+  margin-top: 0.5em;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose h1+p,
+.prose h2+p,
+.prose h3+p,
+.prose h4+p {
+  margin-top: 0.75em;
+}
+
+.prose p br+br {
+  display: block;
+  content: "";
+  margin-top: 0.75em;
+}
+
+.prose blockquote {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  padding-left: 1.25em;
+  border-left: 4px solid var(--color-nepal-red);
+  font-style: italic;
+}
+
+.prose figcaption,
+.prose .wp-caption-text {
+  font-size: 0.875rem;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 0.5em;
+}
+
+.prose iframe,
+.prose .wp-block-embed {
+  max-width: 100%;
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+}
+
+/* ============================
+   UI & Layout Utilities
+   ============================ */
+
+/* Hide scrollbar */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Mobile utilities */
+.mobile-text-safe {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.prevent-overflow {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Footer headline */
+.footer-headline {
+  font-size: 1.75rem;
+  line-height: 1.2;
+  border: none !important;
+  outline: none !important;
+}
+
+@media (min-width: 768px) {
+  .footer-headline {
+    font-size: 3rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .footer-headline {
+    font-size: 4rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .footer-headline {
+    font-size: 5rem;
+  }
+}
+
+@media (min-width: 1536px) {
+  .footer-headline {
+    font-size: 6rem;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E93B32;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d32a2a;
+}
+
+/* Text Selection */
+::selection {
+  background-color: #E93B32;
+  color: white;
+}
+
+::-moz-selection {
+  background-color: #E93B32;
+  color: white;
+}
+
+/* Focus styles */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #E93B32;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Utility Helpers */
+.newsletter-section h4,
+.newsletter-title,
+.no-border {
+  border: none !important;
+  border-bottom: none !important;
+}
+
+.no-border-bottom {
+  border-bottom: none !important;
+}
+
+.no-outline {
+  outline: none !important;
+}
+
+.text-on-light {
+  color: #000000;
+}
+
+.text-on-dark {
+  color: #FFFFFF;
+}
+
+.card-on-gradient {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+}
