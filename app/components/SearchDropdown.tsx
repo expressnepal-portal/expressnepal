@@ -74,7 +74,7 @@ export default function SearchDropdown() {
           title="Sign In"
         >
           <Search className="w-4 h-4 text-nepal-red shrink-0" />
-          <span className="text-gray-500 font-poppins text-[11px] sm:text-xs truncate">खोज्नुहोस्...</span>
+          <span className="text-gray-500 font-poppins text-[11px] sm:text-xs truncate">Sign In</span>
         </button>
       ) : (
         <form onSubmit={handleSubmit} className="relative flex items-center w-full">
