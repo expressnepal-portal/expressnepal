@@ -42,7 +42,7 @@ export default function FooterClient({ footerPages }: FooterClientProps) {
               src="/logo.png"
               width={130}
               height={32}
-              alt="KTM Post Logo"
+              alt="Express Nepal"
               className="h-8 w-auto object-contain"
             />
           </Link>
