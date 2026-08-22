@@ -101,7 +101,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
 
       {/* DESKTOP STICKY NAVBAR - cleanly centered */}
       <nav className="hidden lg:block bg-white border-t border-b border-gray-200">
-        <div className="max-w-[1920px] mx-auto flex items-center justify-between px-mobile-safe py-1.5">
+       <div class="max-w-[1920px]] mx-auto flex items-center justify-between px-mobile-safe py-1.5 bg-gray-100">
           {/* Left: logo when scrolled */}
           {scrolled ? (
             <div className="flex items-center shrink-0 mr-4">
