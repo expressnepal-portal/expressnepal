@@ -30,8 +30,7 @@ export default function FooterClient({ footerPages }: FooterClientProps) {
     <footer className="bg-[#f2f2f0] border-t-4 border-transparent w-full mt-20 relative">
       {/* Two-tone accent bar matching logo colors */}
       <div className="w-full h-1 flex">
-        <div className="flex-1 bg-[#2f6fb0]"></div>
-        <div className="flex-1 bg-nepal-red"></div>
+       
       </div>
 
       <div className="w-full max-w-[1920px] mx-auto px-6 lg:px-12 py-10 md:py-14 flex flex-col md:flex-row items-center md:justify-between gap-8">
