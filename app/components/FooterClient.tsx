@@ -47,9 +47,9 @@ export default function FooterClient({ footerPages }: FooterClientProps) {
             />
           </Link>
           <p className="text-xs text-gray-500 font-poppins text-center md:text-left leading-relaxed">
-            &copy; {currentYear} KTM Post. All rights reserved.
+            &copy; {currentYear} ExpressNepal. All rights reserved.
             <br />
-            डिजी भिजन प्रा. लि., सूचना विभाग द.नं. ५३१६-२०८२/०८३
+            Express Your Voice. Share Your Stories. Celebrate Your Spirit.
           </p>
         </div>
         {/* Quick Links */}
@@ -67,7 +67,7 @@ export default function FooterClient({ footerPages }: FooterClientProps) {
             ))}
           </ul>
           <p className="text-[10px] text-gray-400 font-poppins tracking-wide">
-            Trusted Journalism from the Himalayas
+            ExprssNepal is free to all, thanks to readers like you. 
           </p>
         </div>
       </div>
