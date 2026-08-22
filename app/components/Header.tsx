@@ -1,5 +1,4 @@
-import React from "react";
-import HeaderClient from "./HeaderClient";
+// import React from "react";import HeaderClient from "./HeaderClient";
 import { fetchNavbarMenu } from "@/lib/wordpress";
 import { Category } from "@/lib/type";
 
