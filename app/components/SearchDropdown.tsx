@@ -71,7 +71,7 @@ export default function SearchDropdown() {
         <button
           onClick={() => setIsOpen(true)}
           className="p-2 sm:px-3 rounded-lg hover:bg-gray-100 transition-colors flex items-center gap-1.5 sm:gap-2 text-gray-700 text-xs sm:text-sm font-medium border border-gray-200 bg-gray-50/50"
-          title="समाचार खोज्नुहोस्"
+          title="Sign In"
         >
           <Search className="w-4 h-4 text-nepal-red shrink-0" />
           <span className="text-gray-500 font-poppins text-[11px] sm:text-xs truncate">खोज्नुहोस्...</span>
@@ -82,7 +82,7 @@ export default function SearchDropdown() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="समाचार खोज्नुहोस्... (Nepali / English)"
+            placeholder="Sign In"
             autoFocus
             className="w-full pl-9 pr-8 py-1.5 text-sm bg-white border-2 border-nepal-red rounded-lg focus:outline-none shadow-sm text-gray-900 font-poppins"
           />
