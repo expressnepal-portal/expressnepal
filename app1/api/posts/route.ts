@@ -6,8 +6,8 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const page = searchParams.get('page') || '1';
-
-
+    
+    
     const query = `
       query GetPosts {
         posts(first: 50, where: {orderby: {field: DATE, order: DESC}}) {
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
         }
       }
     `;
-
+  
 
     const response = await fetch(API_URL, {
       method: "POST",
@@ -61,16 +61,16 @@ export async function GET(request: Request) {
 
     const posts = json.data?.posts?.edges?.map((edge: any) => {
       const post = edge.node;
-
+      
       // Ensure featured image URLs are absolute
       if (post.featuredImage?.node?.sourceUrl) {
         let imageUrl = post.featuredImage.node.sourceUrl;
         if (imageUrl.startsWith('/')) {
-          imageUrl = `http://cms.expressnepal.com${imageUrl}`;
+          imageUrl = `http://cms.ktmpost.com${imageUrl}`;
         }
         post.featuredImage.node.sourceUrl = imageUrl;
       }
-
+      
       // Extract additional images from content
       const images: string[] = [];
       if (post.content) {
@@ -80,13 +80,13 @@ export async function GET(request: Request) {
           if (match[1]) {
             let imageUrl = match[1];
             if (imageUrl.startsWith('/')) {
-              imageUrl = `http://cms.expressnepal.com${imageUrl}`;
+              imageUrl = `http://cms.ktmpost.com${imageUrl}`;
             }
             images.push(imageUrl);
           }
         }
       }
-
+      
       return {
         id: post.id,
         uri: post.uri,
