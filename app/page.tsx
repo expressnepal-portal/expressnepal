@@ -52,7 +52,7 @@ export async function getPosts(page: number = 1): Promise<Post[]> {
     try {
         const baseUrl =
             process.env.NODE_ENV === "production"
-                ? "https://www.nepalvoices.com"
+                ? "https://www.expressnepal.com"
                 : "http://localhost:300x0";
 
         const apiUrl = `${baseUrl}/api/posts?page=${page}`;
