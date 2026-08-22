@@ -308,6 +308,7 @@ export default async function HomePage() {
         legal,
         health,
         exclusive,
+        technology,
     } = await fetchHomePagePosts();
     const Posts = await fetchPosts(10);
     const posts = Posts.map(mapWpPost);
@@ -360,12 +361,19 @@ export default async function HomePage() {
             : health && health.length > 0
                 ? health.map(mapWpPost)
                 : [];
-    const rawLegalPosts = await fetchPostsByCategory("legal", 3);
+    const rawTechPosts = await fetchPostsByCategory("science-technology", 6);
+    const techPosts =
+        rawTechPosts && rawTechPosts.length > 0
+            ? rawTechPosts.map(mapWpPost)
+            : technology && technology.length > 0
+                ? technology.map(mapWpPost)
+                : [];
+    const rawLegalPosts = await fetchPostsByCategory("legal", 6);
     const legalPosts =
         rawLegalPosts && rawLegalPosts.length > 0
             ? rawLegalPosts.map(mapWpPost)
             : legal && legal.length > 0
-                ? legal.map(mapWpPost)
+                ? legal.map(mapWpPost).slice(0, 6)
                 : [];
     return (
         <div
@@ -1254,94 +1262,159 @@ className="md:hidden flex items-center justify-center gap-2 mt-8 text-white text
         </section>
 )}
 
-{/* Legal Section + Calendar & Nepal at a Glance Row */ }
-<div className="h-10 md:h-14 lg:h-16 bg-transparent"> </div>
-    <section className="w-full">
-        <div className="w-full max-w-[1920px] mx-auto px-mobile-safe">
+        {/* Legal Section + Nepal at a Glance Row */}
+        <div className="h-10 md:h-14 lg:h-16 bg-transparent"> </div>
+        <section className="w-full">
+          <div className="w-full max-w-[1920px] mx-auto px-mobile-safe">
             <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-8 md:gap-10">
-                {/* LEFT: Legal Section (3 posts) */ }
-                <div className="flex flex-col">
-                    <div className="flex items-center justify-between mb-6 border-b-2 border-gray-200 pb-3">
-                        <h2 className="text-2xl md:text-3xl font-bold text-nepal-black font-nepali-serif">
-                            कानून{ " " }
-<span className="text-gray-500 font-poppins text-lg font-normal"> / Legal</span >
-    </h2>
-    <Link
-href = "/legal"
-className="text-xs font-bold text-nepal-red uppercase tracking-wider hover:underline"
-    >
-    थप हेर्नुहोस् →
-</Link>
-    </div>
-
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-    {
-        legalPosts.map((post) => {
-            const contentImages = extractImagesFromContent(post.content);
-            const featuredImageUrl = post.featuredImage;
-            const thumbnailImage = featuredImageUrl ?? contentImages[0] ?? undefined;
-
-            return (
-                <Link
-                        key= { post.id }
-            href = { getPostUrl(post) }
-            className="group flex flex-col cursor-pointer bg-white border border-gray-200 p-4 transition-all duration-200 hover:shadow-md"
-                >
-                <div className="w-full h-40 bg-gray-100 overflow-hidden mb-3">
-                    <NewsImage
-                            post={ post }
-            images = { thumbnailImage? [thumbnailImage]: [] }
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-            fallbackGradient = "bg-gradient-to-br from-gray-200 to-gray-300"
-                />
+              {/* LEFT: Legal Section (6 posts) */}
+              <div className="flex flex-col">
+                <div className="flex items-center justify-between mb-6 border-b-2 border-gray-200 pb-3">
+                  <h2 className="text-2xl md:text-3xl font-bold text-nepal-black font-nepali-serif">
+                    कानून{" "}
+                    <span className="text-gray-500 font-poppins text-lg font-normal">
+                      / Legal
+                    </span>
+                  </h2>
+                  <Link
+                    href="/legal"
+                    className="text-xs font-bold text-nepal-red uppercase tracking-wider hover:underline"
+                  >
+                    थप हेर्नुहोस् →
+                  </Link>
                 </div>
-                <h3 className="font-nepali-serif font-bold text-base md:text-lg text-gray-900 leading-snug group-hover:text-nepal-red transition-colors line-clamp-2 mb-2">
-                    { getCleanTitle(post.title)
-    }
-        </h3>
-        <p className="text-xs text-gray-600 font-poppins line-clamp-2">
-            { getCleanContent(post.content, 90) }
-            </p>
-            </Link>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  {legalPosts.map((post) => {
+                    const contentImages = extractImagesFromContent(
+                      post.content,
+                    );
+                    const featuredImageUrl = post.featuredImage;
+                    const thumbnailImage =
+                      featuredImageUrl ?? contentImages[0] ?? undefined;
+
+                    return (
+                      <Link
+                        key={post.id}
+                        href={getPostUrl(post)}
+                        className="group flex flex-col cursor-pointer bg-white border border-gray-200 p-4 transition-all duration-200 hover:shadow-md"
+                      >
+                        <div className="w-full h-40 bg-gray-100 overflow-hidden mb-3">
+                          <NewsImage
+                            post={post}
+                            images={thumbnailImage ? [thumbnailImage] : []}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            fallbackGradient="bg-gradient-to-br from-gray-200 to-gray-300"
+                          />
+                        </div>
+                        <h3 className="font-nepali-serif font-bold text-base md:text-lg text-gray-900 leading-snug group-hover:text-nepal-red transition-colors line-clamp-2 mb-2">
+                          {getCleanTitle(post.title)}
+                        </h3>
+                        <p className="text-sm text-gray-600 font-poppins line-clamp-2">
+                          {getCleanContent(post.content, 90)}
+                        </p>
+                      </Link>
                     );
                   })}
-</div>
-    </div>
+                </div>
+              </div>
 
-{/* RIGHT: Nepali Calendar & Holidays */ }
-<div className="flex flex-col gap-4">
-    <div className="flex items-center mb-2 border-b-2 border-gray-200 pb-2">
-        <h3 className="text-xl font-bold text-nepal-black font-nepali-serif">
-            पात्रो र बिदाहरू{ " " }
-<span className="text-gray-400 font-poppins text-xs font-normal"> / Calendar</span >
-    </h3>
-    </div>
-    < NepaliCalendarWidget />
-    <UpcomingHolidays maxItems={ 3 } />
-        </div>
-        </div>
+              {/* RIGHT: Nepal at a Glance / Forex Rates */}
+              <div className="flex flex-col">
+                <Suspense
+                  fallback={
+                    <div className="border border-gray-200 h-64 flex items-center justify-center text-gray-400 text-sm font-poppins">
+                      दर लोड हुँदैछ...
+                    </div>
+                  }
+                >
+                  <ForexRatesWidget />
+                </Suspense>
+              </div>
+            </div>
+          </div>
+        </section>
 
-{/* Bottom Row: Nepal at a Glance / Forex */ }
-<div className="mt-12 pt-8 border-t border-gray-200">
-    <div className="flex items-center mb-6 border-b-2 border-gray-200 pb-3">
-        <h2 className="text-2xl md:text-3xl font-bold text-nepal-black font-nepali-serif">
-            नेपाल एक नजरमा{ " " }
-<span className="text-gray-500 font-poppins text-lg font-normal"> / Nepal at a Glance</span >
-    </h2>
-    </div>
-    < Suspense fallback = {
-                <div className="border border-gray-200 h-64 flex items-center justify-center text-gray-400 text-sm font-poppins">
-    दर लोड हुँदैछ...
-</div>
-              }>
-    <ForexRatesWidget />
-    </Suspense>
-    </div>
-    </div>
-    </section>
+        {/* Science & Technology Section + Calendar & Holidays Row */}
+        <div className="h-10 md:h-14 lg:h-16 bg-transparent"> </div>
+        <section className="w-full">
+          <div className="w-full max-w-[1920px] mx-auto px-mobile-safe">
+            <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-8 md:gap-10">
+              {/* LEFT: Science & Technology Section */}
+              <div className="order-2 md:order-1 flex flex-col">
+                {/* Section Header */}
+                <div className="flex items-center justify-between gap-4 mb-6 border-b-2 border-gray-200 pb-3">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-nepal-black font-nepali-serif">
+                    सूचना-प्रविधि{" "}
+                    <span className="text-sm sm:text-base md:text-lg text-gray-500 font-normal font-poppins">
+                      / Science & Technology
+                    </span>
+                  </h2>
 
-    <div className="h-10 md:h-14 lg:h-16 bg-transparent"> </div>
-        </main>
-        </div>
+                  <Link
+                    href="/technology"
+                    className="shrink-0 text-xs sm:text-sm font-bold text-nepal-red uppercase tracking-wider hover:underline"
+                  >
+                    थप हेर्नुहोस् →
+                  </Link>
+                </div>
+
+                {/* Science & Technology Posts */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
+                  {techPosts.slice(0, 6).map((post) => {
+                    const contentImages = extractImagesFromContent(
+                      post.content,
+                    );
+                    const thumbnailImage =
+                      post.featuredImage ?? contentImages[0] ?? undefined;
+
+                    return (
+                      <Link
+                        key={post.id}
+                        href={getPostUrl(post)}
+                        className="group flex h-full flex-col cursor-pointer border border-gray-200 bg-white p-3 sm:p-4 transition-all duration-200 hover:shadow-md"
+                      >
+                        <div className="mb-3 aspect-video w-full overflow-hidden bg-gray-100">
+                          <NewsImage
+                            post={post}
+                            images={thumbnailImage ? [thumbnailImage] : []}
+                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            fallbackGradient="bg-gradient-to-br from-gray-200 to-gray-300"
+                          />
+                        </div>
+
+                        <h3 className="mb-2 line-clamp-2 font-nepali-serif text-sm font-bold leading-snug text-gray-900 transition-colors group-hover:text-nepal-red sm:text-base md:text-lg">
+                          {getCleanTitle(post.title)}
+                        </h3>
+
+                        <p className="line-clamp-2 font-poppins text-xs text-gray-600 sm:text-sm">
+                          {getCleanContent(post.content, 90)}
+                        </p>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* RIGHT: Nepali Calendar & Holidays */}
+              <div className="flex flex-col gap-4 order-1 md:order-2">
+                <div className="flex items-center mb-2 border-b-2 border-gray-200 pb-2">
+                  <h3 className="text-xl font-bold text-nepal-black font-nepali-serif">
+                    पात्रो र बिदाहरू{" "}
+                    <span className="text-gray-400 font-poppins text-xs font-normal">
+                      / Calendar
+                    </span>
+                  </h3>
+                </div>
+                <NepaliCalendarWidget />
+                <UpcomingHolidays maxItems={3} />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="h-10 md:h-14 lg:h-16 bg-transparent"> </div>
+      </main>
+    </div>
   );
 }
