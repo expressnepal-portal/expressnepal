@@ -1182,7 +1182,7 @@ export default async function HomePage() {
                                                                 authorName.toLowerCase() !== "news";
                                                             return isValidAuthor
                                                                 ? authorName
-                                                                : "KTM Time Opinions";
+                                                                : "EN";
                                                         })()}
                                                     </span>
                                                 </div>
@@ -1225,7 +1225,7 @@ export default async function HomePage() {
                                     const displayAuthor =
                                         authorName && authorName.toLowerCase() !== "news"
                                             ? authorName
-                                            : "KTM Post";
+                                            : "EN";
 
                                     return (
                                         <Link
