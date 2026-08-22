@@ -101,8 +101,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
 
       {/* DESKTOP STICKY NAVBAR - cleanly centered */}
       <nav className="hidden lg:block bg-white border-t border-b border-gray-200">
-       <div class="max-w-[1920px]] mx-auto flex items-center justify-between px-mobile-safe py-1.5 bg-gray-100">
-          {/* Left: logo when scrolled */}
+<div className="max-w-[1920px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1.5 bg-gray-100">          {/* Left: logo when scrolled */}
           {scrolled ? (
             <div className="flex items-center shrink-0 mr-4">
               <Link href={"/"} className="transition-opacity hover:opacity-90">
@@ -110,7 +109,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
                   src="/logo.png"
                   width={180}
                   height={40}
-                  alt="KTM Post Logo"
+                  alt="Express Nepal Logo"
                   className="h-8 lg:h-9 w-auto object-contain"
                 />
               </Link>
