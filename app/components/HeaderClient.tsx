@@ -49,13 +49,15 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
         }`}
       >
         {/* Date & Location (Top utility line) - 3-column grid for perfect alignment */}
-        <div className="w-full grid grid-cols-3 items-center border-b border-gray-100 pb-1 mb-1.5 text-xs tracking-wider text-gray-500 uppercase font-medium">
-          <span className="hidden sm:block text-left">Kathmandu, Nepal</span>
-          <div className="col-span-3 sm:col-span-1 text-center">
-            <NepaliDateTime />
-          </div>
-          <span className="hidden sm:block text-right">English / नेपाली</span>
-        </div>
+    {/*
+<div className="w-full grid grid-cols-3 items-center border-b border-gray-100 pb-1 mb-1.5 text-xs tracking-wider text-gray-500 uppercase font-medium">
+  <span className="hidden sm:block text-left">Kathmandu, Nepal</span>
+  <div className="col-span-3 sm:col-span-1 text-center">
+    <NepaliDateTime />
+  </div>
+  <span className="hidden sm:block text-right">English / नेपाली</span>
+</div>
+*/}
 
         {/* Logo Masthead */}
         <div className="flex items-center justify-between w-full px-2 py-2 relative">
