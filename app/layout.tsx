@@ -8,8 +8,8 @@ import { MobileMenuProvider } from "./components/MobileMenuContext";
 import BannerAdsTop from "./components/BannersAdsTop";
 
 export const metadata: Metadata = {
-    title: "KTM Post - Trusted News from Nepal",
-    description: "Independent journalism and latest news from Nepal",
+    title: "Express Nepal",
+    description: " Local Breaking news, business, weather, and things to do",
 };
 
 const poppins = Poppins({
