@@ -516,9 +516,14 @@ export default async function HomePage() {
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent pointer-events-none" />
 
                                                 <div className="absolute bottom-0 inset-x-0 p-4 sm:p-6 md:p-8 z-10 flex flex-col items-start">
+                                                   
+                                                    {/*
                                                     <span className="bg-[#ea3323] text-white px-2.5 py-0.5 md:px-3 md:py-1 text-xs md:text-sm font-bold rounded-xs tracking-wide shadow-sm font-nepali-serif mb-2 md:mb-2.5 inline-block">
                                                         {post.categoryName}
                                                     </span>
+
+                                                    */}
+                                                    
                                                     <h3 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-black text-white group-hover:text-red-400 transition-colors font-nepali-serif leading-tight tracking-tight drop-shadow-sm mb-2 md:mb-2.5">
                                                         {getCleanTitle(post.title)}
                                                     </h3>
