@@ -48,7 +48,7 @@ export default function FooterClient({ footerPages }: FooterClientProps) {
           <p className="text-xs text-gray-500 font-poppins text-center md:text-left leading-relaxed">
             &copy; {currentYear} ExpressNepal. All rights reserved.
             <br />
-            Express Your Voice. Share Your Stories. Celebrate Your Spirit.
+           ExpressNepal.com is owned by Byte Media Pvt. Ltd.
           </p>
         </div>
         {/* Quick Links */}
