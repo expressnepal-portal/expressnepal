@@ -708,3 +708,24 @@ textarea:focus-visible {
   overflow: hidden;
 }
 
+/* ============================
+   Breaking News Ticker
+   ============================ */
+
+@keyframes ticker-scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-scroll {
+  animation: ticker-scroll 30s linear infinite;
+}
+
+.ticker-paused {
+  animation-play-state: paused;
+}
+

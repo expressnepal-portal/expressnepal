@@ -17,6 +17,7 @@ import {
     type Post as WordPressPost,
 } from "@/lib/wordpress";
 import BreakingNews from "./components/BreakingNews";
+import BreakingNewsTicker from "./components/BreakingNewsTicker";
 import SidebarAds from "./components/SidebarAds";
 import BannerAdSlot from "./components/BannerAdSlot";
 import Card from "./components/Card";
@@ -381,6 +382,25 @@ export default async function HomePage() {
         <div
             className={`${inter.className} min-h-screen text-nepal-black overflow-x-hidden w-full gradient-white-to-orange`}
         >
+            {/* Breaking News Ticker - Rasuwa Flood Update */}
+            <BreakingNewsTicker />
+
+            {/* Jasmine Banner Ad */}
+            <div className="w-full flex justify-center py-3 md:py-5 bg-white">
+                <a
+                    href="https://rasuwaflood.expressnepal.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full max-w-5xl px-4"
+                >
+                    <img
+                        src="/banner/banner-jasmine-1.jpeg"
+                        alt="Jasmine Advertisement"
+                        className="w-full h-auto object-contain rounded-sm"
+                    />
+                </a>
+            </div>
+
             {exclusivePosts.length > 0 && (
                 <section className="w-full pt-4 md:pt-6 mb-8">
                     <div className="w-full max-w-[1920px] mx-auto px-mobile-safe">
