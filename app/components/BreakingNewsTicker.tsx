@@ -30,13 +30,13 @@ export default function BreakingNewsTicker({
           href={link}
           target="_blank"
           rel="noopener noreferrer"
-          className="shrink-0 bg-white text-[#DC241F] font-bold text-xs sm:text-sm px-3 sm:px-5 py-2.5 tracking-wider uppercase font-poppins flex items-center gap-2 hover:bg-gray-100 transition-colors z-10"
+          className="shrink-0 bg-[#DC241F] text-white font-bold text-xs sm:text-sm px-3 sm:px-5 py-2.5 tracking-wider uppercase font-poppins flex items-center gap-2 hover:bg-red-700 transition-colors z-10"
         >
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#DC241F] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#DC241F]"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
           </span>
-          <span className="hidden sm:inline">BREAKING NEWS</span>
+          <span className="hidden sm:inline ">Rasuwa Floods</span>
           <span className="sm:hidden">ब्रेकिंग</span>
         </Link>
 
