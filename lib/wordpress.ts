@@ -4,6 +4,27 @@ import { transliterateSlug } from "./transliterate";
 const API_URL =
   process.env.API_URL || "https://cms.expressnepal.com/?graphql";
 
+const FETCH_TIMEOUT_MS = 30_000; // 30 seconds
+
+/** Fetch with a timeout so builds don't hang when the CMS is slow */
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit & { next?: any },
+  timeoutMs = FETCH_TIMEOUT_MS
+): Promise<Response> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+    return response;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export interface FeaturedImage {
   sourceUrl: string;
   altText: string;
@@ -90,7 +111,7 @@ export async function fetchPosts(first: number = 10): Promise<Post[]> {
   `;
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetchWithTimeout(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -1183,7 +1204,7 @@ export async function fetchFooterPages(): Promise<WPFooterPage[]> {
   `;
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetchWithTimeout(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ query }),
@@ -1241,7 +1262,7 @@ export async function fetchNavbarMenu(): Promise<NavbarMenuItem[]> {
   `;
 
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetchWithTimeout(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
       body: JSON.stringify({ query }),
