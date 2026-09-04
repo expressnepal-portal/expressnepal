@@ -62,7 +62,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
         {/* Logo Masthead */}
         <div className="flex items-center justify-between w-full px-2 py-2 relative">
           {/* Left: Mobile menu */}
-          <div className="flex items-center justify-start min-w-[120px]">
+          <div className="flex items-center justify-start w-12 sm:min-w-[120px]">
             <div className="lg:hidden shrink-0">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -86,14 +86,14 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
                 width={360}
                 height={90}
                 alt="KTM Post Logo"
-                className="h-10 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"
+                className="h-9 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"
                 priority
               />
             </Link>
           </div>
 
-          {/* Right: Search */}
-          <div className="flex items-center justify-end min-w-[120px]">
+          {/* Right: Search / Sign In */}
+          <div className="flex items-center justify-end w-auto sm:min-w-[120px]">
             <SearchDropdown />
           </div>
         </div>
