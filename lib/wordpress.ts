@@ -178,9 +178,10 @@ const categorySlugAliases: Record<string, string[]> = {
   "अन्तराष्ट्रिय": ["international", "world", "अन्तराष्ट्रिय"],
   "international": ["international", "world"],
   "world": ["world", "international"],
-  "technology": ["science-and-technology", "technology"],
-  "science-and-technology": ["science-and-technology", "technology"],
-  "विज्ञान प्रविधि": ["science-and-technology"],
+  "technology": ["science-technology", "science-and-technology", "technology"],
+  "science-technology": ["science-technology", "science-and-technology", "technology"],
+  "science-and-technology": ["science-technology", "science-and-technology", "technology"],
+  "विज्ञान प्रविधि": ["science-technology", "science-and-technology", "technology"],
   "कला साहित्य": ["arts"],
   "arts": ["arts"],
   "शिक्षा": ["शिक्षा"]
@@ -1103,6 +1104,32 @@ export interface WPFooterPage {
   uri: string;
 }
 
+export const DEFAULT_NAVBAR_MENU: NavbarMenuItem[] = [
+  { id: "nav-news", title: "समाचार", slug: "news", menuOrder: 1 },
+  { id: "nav-politics", title: "राजनीति", slug: "politics", menuOrder: 2 },
+  { id: "nav-opinion", title: "विचार", slug: "opinion", menuOrder: 3 },
+  { id: "nav-economy", title: "अर्थ", slug: "economy", menuOrder: 4 },
+  { id: "nav-sports", title: "खेलकुद", slug: "sports", menuOrder: 5 },
+  { id: "nav-society", title: "स्वास्थ्य/जीवन शैली", slug: "health-and-lifestyle", menuOrder: 6 },
+  { id: "nav-tech", title: "विज्ञान प्रविधि", slug: "technology", menuOrder: 7 },
+  { id: "nav-world", title: "अन्तराष्ट्रिय", slug: "world", menuOrder: 8 },
+  { id: "nav-legal", title: "कानून", slug: "legal", menuOrder: 9 },
+  { id: "nav-multimedia", title: "मल्टिमिडिया", slug: "multimedia", menuOrder: 10 },
+];
+
+export const DEFAULT_WP_CATEGORIES: WPCategory[] = [
+  { id: "cat-news", name: "समाचार", slug: "news", count: 10 },
+  { id: "cat-politics", name: "राजनीति", slug: "politics", count: 10 },
+  { id: "cat-opinion", name: "विचार", slug: "opinion", count: 10 },
+  { id: "cat-economy", name: "अर्थ", slug: "economy", count: 10 },
+  { id: "cat-sports", name: "खेलकुद", slug: "sports", count: 10 },
+  { id: "cat-society", name: "स्वास्थ्य/जीवन शैली", slug: "health-and-lifestyle", count: 10 },
+  { id: "cat-tech", name: "विज्ञान प्रविधि", slug: "technology", count: 10 },
+  { id: "cat-world", name: "अन्तराष्ट्रिय", slug: "world", count: 10 },
+  { id: "cat-legal", name: "कानून", slug: "legal", count: 10 },
+  { id: "cat-multimedia", name: "मल्टिमिडिया", slug: "multimedia", count: 10 },
+];
+
 export async function fetchWPCategories(): Promise<WPCategory[]> {
   const query = `
     query GetCategories {
@@ -1125,12 +1152,13 @@ export async function fetchWPCategories(): Promise<WPCategory[]> {
       next: { revalidate: 60, tags: ["layout"] },
     });
 
-    if (!response.ok) return [];
+    if (!response.ok) return DEFAULT_WP_CATEGORIES;
     const json = await response.json();
-    return json.data?.categories?.nodes || [];
+    const categories = json.data?.categories?.nodes;
+    return categories && categories.length > 0 ? categories : DEFAULT_WP_CATEGORIES;
   } catch (error) {
     console.error("Error fetching categories:", error);
-    return [];
+    return DEFAULT_WP_CATEGORIES;
   }
 }
 
@@ -1220,7 +1248,7 @@ export async function fetchNavbarMenu(): Promise<NavbarMenuItem[]> {
       next: { revalidate: 60, tags: ["layout"] },
     });
 
-    if (!response.ok) return [];
+    if (!response.ok) return DEFAULT_NAVBAR_MENU;
     const json = await response.json();
     const childNodes: NavbarMenuItem[] = json.data?.navbarMenu?.nodes?.[0]?.children?.nodes || [];
     const topNodes: NavbarMenuItem[] = json.data?.topPages?.nodes || [];
@@ -1254,6 +1282,10 @@ export async function fetchNavbarMenu(): Promise<NavbarMenuItem[]> {
     });
 
     const result = Array.from(map.values());
+    if (result.length === 0) {
+      return DEFAULT_NAVBAR_MENU;
+    }
+
     result.sort((a, b) => {
       const orderA = a.menuOrder && a.menuOrder > 0 ? a.menuOrder : 999;
       const orderB = b.menuOrder && b.menuOrder > 0 ? b.menuOrder : 999;
@@ -1263,7 +1295,7 @@ export async function fetchNavbarMenu(): Promise<NavbarMenuItem[]> {
     return result;
   } catch (error) {
     console.error("Error fetching navbar menu pages:", error);
-    return [];
+    return DEFAULT_NAVBAR_MENU;
   }
 }
 

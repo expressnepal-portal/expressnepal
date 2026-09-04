@@ -44,7 +44,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
       <div
         className={`w-full max-w-[1920px] mx-auto px-mobile-safe relative flex flex-col items-center transition-all duration-300 ${
           scrolled
-            ? "max-h-0 opacity-0 py-0 overflow-hidden"
+            ? "max-h-14 opacity-80 py-0.5"
             : "max-h-60 opacity-100 py-1.5 sm:py-2"
         }`}
       >
@@ -60,9 +60,35 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
 */}
 
         {/* Logo Masthead */}
-        <div className="flex items-center justify-between w-full px-2 py-2 relative">
-          {/* Left: Mobile menu */}
+        <div className={`flex items-center justify-between w-full px-2 ${scrolled ? "py-1" : "py-2"} relative`}>
+          {/* Left: User / Sign In Icon */}
           <div className="flex items-center justify-start w-12 sm:min-w-[120px]">
+            <SearchDropdown variant="user" />
+          </div>
+
+          {/* Center: Brand Logo + Nepali Date */}
+          <div className="flex flex-col items-center text-center">
+            <Link href="/" className="transition-transform duration-200 hover:scale-[1.01]">
+              <Image
+                src="/logo.png"
+                width={360}
+                height={90}
+                alt="Express Nepal Logo"
+                className={scrolled ? "h-6 sm:h-8 md:h-10 lg:h-12 w-auto object-contain" : "h-8 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"}
+                priority
+              />
+            </Link>
+            <NepaliDateTime />
+          </div>
+
+          {/* Right: Search button on Desktop & Mobile Menu Hamburger on Mobile */}
+          <div className="flex items-center justify-end w-12 sm:min-w-[120px]">
+            {/* Desktop search in masthead */}
+            <div className="hidden lg:flex items-center">
+              <SearchDropdown variant="search" />
+            </div>
+
+            {/* Mobile hamburger button */}
             <div className="lg:hidden shrink-0">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -70,38 +96,20 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
                 aria-label="Toggle Menu"
               >
                 {mobileMenuOpen ? (
-                  <X className="w-6 h-6 text-gray-700" />
+                  <X className="w-6 h-6 text-blue-900" />
                 ) : (
-                  <Menu className="w-6 h-6 text-gray-700" />
+                  <Menu className="w-6 h-6 text-blue-900" />
                 )}
               </button>
             </div>
-          </div>
-
-          {/* Center: Brand Logo */}
-          <div className="flex flex-col items-center text-center">
-            <Link href="/" className="transition-transform duration-200 hover:scale-[1.01]">
-              <Image
-                src="/logo.png"
-                width={360}
-                height={90}
-                alt="KTM Post Logo"
-                className="h-9 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"
-                priority
-              />
-            </Link>
-          </div>
-
-          {/* Right: Search / Sign In */}
-          <div className="flex items-center justify-end w-auto sm:min-w-[120px]">
-            <SearchDropdown />
           </div>
         </div>
       </div>
 
       {/* DESKTOP STICKY NAVBAR - cleanly centered */}
       <nav className="hidden lg:block bg-white border-t border-b border-gray-200">
-<div className="max-w-[1920px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1.5 bg-gray-100">          {/* Left: logo when scrolled */}
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1.5 bg-gray-100">
+          {/* Left: logo when scrolled */}
           {scrolled ? (
             <div className="flex items-center shrink-0 mr-4">
               <Link href={"/"} className="transition-opacity hover:opacity-90">
@@ -144,12 +152,10 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
             </ul>
           </div>
 
-          {/* Right: search when scrolled */}
-          {scrolled ? (
-            <div className="flex items-center shrink-0 ml-4">
-              <SearchDropdown />
-            </div>
-          ) : null}
+          {/* Right: search when scrolled or desktop utility */}
+          <div className="flex items-center shrink-0 ml-4">
+            <SearchDropdown variant="search" />
+          </div>
         </div>
       </nav>
 
@@ -162,19 +168,19 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
       )}
       
       <div
-        className={`fixed top-0 right-0 w-80 h-full bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed top-0 right-0 w-80 h-full bg-white z-50 shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden flex flex-col ${
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Mobile Menu Header */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
           <span className="font-bold text-xl tracking-wide">
             <Image 
               src="/logo.png" 
               width={120} 
               height={30} 
-              alt="Nepal Voices" 
-              className="h-8 w-auto object-contain"
+              alt="Express Nepal Logo" 
+              className="h-7 w-auto object-contain"
             />
           </span>
           <button
@@ -186,9 +192,14 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
           </button>
         </div>
 
+        {/* Mobile Search Box in Menu */}
+        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/70">
+          <SearchDropdown variant="inline" />
+        </div>
+
         {/* Mobile Menu Navigation Items */}
-        <div className="py-4 overflow-y-auto h-[calc(100vh-80px)]">
-          <ul className="flex flex-col px-4 gap-1">
+        <div className="py-3 overflow-y-auto flex-1">
+          <ul className="flex flex-col px-3 gap-1">
             {categories.map((cat) => {
               const isHome = cat.slug === "/";
               const href = isHome ? "/" : `/${cat.slug}`;
@@ -198,9 +209,9 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
                   <Link
                     href={href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`block px-4 py-3 rounded-lg text-base font-semibold transition-colors ${
+                    className={`block px-4 py-2.5 rounded-lg text-base font-semibold transition-colors ${
                       isActive
-                        ? "bg-gray-50 text-nepal-red"
+                        ? "bg-red-50 text-nepal-red"
                         : "text-gray-800 hover:bg-gray-50 hover:text-nepal-red"
                     }`}
                   >
