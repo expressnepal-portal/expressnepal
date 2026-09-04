@@ -62,7 +62,7 @@ export async function GET(request: Request) {
     const posts = json.data?.posts?.edges?.map((edge: any) => {
       const post = edge.node;
 
-      // Ensure featured image URLs are absolute
+      // Ensure featured image URLs are absolut
       if (post.featuredImage?.node?.sourceUrl) {
         let imageUrl = post.featuredImage.node.sourceUrl;
         if (imageUrl.startsWith('/')) {
