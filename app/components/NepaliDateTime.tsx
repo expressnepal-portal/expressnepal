@@ -59,7 +59,7 @@ export default function NepaliClock() {
   if (!dateText) return null;
 
   return (
-    <span className="text-gray-600 font-nepali-serif text-xs sm:text-sm font-medium tracking-wide mt-1 block">
+    <span className="text-gray-600 font-nepali-serif text-xs sm:text-sm font-medium tracking-wide block">
       {dateText}
     </span>
   );

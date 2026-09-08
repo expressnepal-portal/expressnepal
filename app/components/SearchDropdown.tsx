@@ -146,10 +146,10 @@ export default function SearchDropdown({ variant = "search" }: SearchDropdownPro
     <div ref={containerRef} className="relative flex justify-end w-full max-w-[240px] sm:max-w-xs md:max-w-sm">
       {!isOpen ? (
         variant === "user" ? (
-          <button
-            onClick={() => setIsOpen(true)}
+          <Link
+            href="/login"
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-blue-600/70 hover:border-blue-600 flex items-center justify-center text-blue-600 hover:bg-blue-50/50 transition-all shadow-sm shrink-0"
-            title="Sign In / User"
+            title="Sign In / Admin Login"
             aria-label="Sign In"
           >
             <svg
@@ -169,7 +169,7 @@ export default function SearchDropdown({ variant = "search" }: SearchDropdownPro
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </Link>
         ) : (
           <button
             onClick={() => setIsOpen(true)}

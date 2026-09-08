@@ -60,29 +60,33 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
 */}
 
         {/* Logo Masthead */}
-        <div className={`flex items-center justify-between w-full px-2 ${scrolled ? "py-1" : "py-2"} relative`}>
+        <div className={`flex items-center justify-between w-full px-4 sm:px-6 ${scrolled ? "py-1.5" : "py-3"} relative`}>
           {/* Left: User / Sign In Icon */}
-          <div className="flex items-center justify-start w-12 sm:min-w-[120px]">
+          <div className="flex items-center justify-start w-12 sm:min-w-[140px]">
             <SearchDropdown variant="user" />
           </div>
 
           {/* Center: Brand Logo + Nepali Date */}
-          <div className="flex flex-col items-center text-center">
-            <Link href="/" className="transition-transform duration-200 hover:scale-[1.01]">
+          <div className="flex flex-col items-center justify-center text-center">
+            <Link href="/" className="transition-transform duration-200 hover:scale-[1.01] inline-block">
               <Image
                 src="/logo.png"
                 width={360}
                 height={90}
                 alt="Express Nepal Logo"
-                className={scrolled ? "h-6 sm:h-8 md:h-10 lg:h-12 w-auto object-contain" : "h-8 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"}
+                className={scrolled ? "h-7 sm:h-9 md:h-10 lg:h-11 w-auto object-contain" : "h-9 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"}
                 priority
               />
             </Link>
-            <NepaliDateTime />
+            {!scrolled && (
+              <div className="mt-1">
+                <NepaliDateTime />
+              </div>
+            )}
           </div>
 
           {/* Right: Search button on Desktop & Mobile Menu Hamburger on Mobile */}
-          <div className="flex items-center justify-end w-12 sm:min-w-[120px]">
+          <div className="flex items-center justify-end w-12 sm:min-w-[140px]">
             {/* Desktop search in masthead */}
             <div className="hidden lg:flex items-center">
               <SearchDropdown variant="search" />
@@ -107,11 +111,11 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
       </div>
 
       {/* DESKTOP STICKY NAVBAR - cleanly centered */}
-      <nav className="hidden lg:block bg-white border-t border-b border-gray-200">
-        <div className="max-w-[1920px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-1.5 bg-gray-100">
+      <nav className="hidden lg:block bg-white border-t border-b border-gray-200 shadow-xs">
+        <div className="max-w-[1920px] mx-auto flex items-center justify-between px-6 lg:px-12 py-2">
           {/* Left: logo when scrolled */}
           {scrolled ? (
-            <div className="flex items-center shrink-0 mr-4">
+            <div className="flex items-center shrink-0 mr-6">
               <Link href={"/"} className="transition-opacity hover:opacity-90">
                 <Image
                   src="/logo.png"
@@ -124,9 +128,9 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
             </div>
           ) : null}
 
-          {/* Navigation items - cleanly centered */}
+          {/* Navigation items - cleanly spaced and centered */}
           <div className="flex-1 flex justify-center overflow-x-auto no-scrollbar">
-            <ul className="flex items-center space-x-1 xl:space-x-3 text-nepal-black font-nepali-serif">
+            <ul className="flex items-center gap-3 xl:gap-6 text-nepal-black font-nepali-serif">
               {categories.map((item, index) => {
                 const isHome = item.slug === "/";
                 const href = isHome ? "/" : `/${item.slug}`;
@@ -137,7 +141,7 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
                   <li key={index} className="shrink-0">
                     <Link href={href}>
                       <span
-                        className={`inline-block px-2 xl:px-3 py-1 font-bold tracking-wide transition-all uppercase border-b-2 text-sm xl:text-base ${
+                        className={`inline-block px-2.5 xl:px-3.5 py-1.5 font-bold tracking-wide transition-all uppercase border-b-2 text-base xl:text-[17px] ${
                           isActive
                             ? "text-nepal-red border-nepal-red"
                             : "text-gray-800 border-transparent hover:text-nepal-red hover:border-nepal-red"
@@ -152,10 +156,12 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
             </ul>
           </div>
 
-          {/* Right: search when scrolled or desktop utility */}
-          <div className="flex items-center shrink-0 ml-4">
-            <SearchDropdown variant="search" />
-          </div>
+          {/* When scrolled: show search on the right for quick access */}
+          {scrolled && (
+            <div className="flex items-center shrink-0 ml-6">
+              <SearchDropdown variant="search" />
+            </div>
+          )}
         </div>
       </nav>
 

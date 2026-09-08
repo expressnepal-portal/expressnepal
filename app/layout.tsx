@@ -6,10 +6,15 @@ import Footer from "./components/Footer";
 
 import { MobileMenuProvider } from "./components/MobileMenuContext";
 import BannerAdsTop from "./components/BannersAdsTop";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
     title: "Express Nepal",
     description: " Local Breaking news, business, weather, and things to do",
+    icons: {
+        icon: "/logo.png",
+        apple: "/logo.png",
+    },
 };
 
 const poppins = Poppins({
@@ -30,28 +35,35 @@ const notoSerifDevanagari = Noto_Serif_Devanagari({
     variable: "--font-noto-serif-devanagari",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    return (
-        <html lang= "en" >
-        <body
-        className={ `${poppins.variable} ${mukta.variable} ${notoSerifDevanagari.variable} antialiased bg-white text-black` }
-      >
-        {/* <CHANGE> wrapped everything with MobileMenuProvider */ }
-        <MobileMenuProvider>
-    {/* FIXED HEADER */ }
-    <Header />
-    {/* CONTENT OFFSET FOR FIXED HEADER */ }
-    <main className="pt-24 sm:pt-28 lg:pt-54 min-h-screen" >
-        { children }
-        </main>
+    // Detect admin routes to hide public site chrome
+    const headersList = await headers();
+    const pathname = headersList.get("x-pathname") || "";
+    const isAdmin = pathname.startsWith("/admin") || pathname.startsWith("/login");
 
-        < Footer />
-        </MobileMenuProvider>
+    return (
+        <html lang="en">
+        <body
+          className={`${poppins.variable} ${mukta.variable} ${notoSerifDevanagari.variable} antialiased bg-white text-black`}
+        >
+          {isAdmin ? (
+            // Admin routes: no public header/footer
+            children
+          ) : (
+            // Public routes: full site chrome
+            <MobileMenuProvider>
+              <Header />
+              <main className="pt-24 sm:pt-28 lg:pt-54 min-h-screen">
+                {children}
+              </main>
+              <Footer />
+            </MobileMenuProvider>
+          )}
         </body>
         </html>
-  );
+    );
 }

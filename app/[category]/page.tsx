@@ -1,9 +1,9 @@
 export const runtime = "nodejs";
 export const revalidate = 60;
 
-import { fetchPostsByCategory, fetchWPCategories } from "@/lib/wordpress";
+import { prisma } from "@/lib/prisma";
 import { transliterateSlug } from "@/lib/transliterate";
-import { extractImagesFromContent, getCleanContent, getCleanTitle, getPostUrl, mapWpPost } from "../page";
+import { getCleanContent, getCleanTitle, getPostUrl, extractImagesFromContent } from "../page";
 import Card from "../components/Card";
 
 export default async function CategoryPage({
@@ -13,27 +13,79 @@ export default async function CategoryPage({
 }) {
   const { category } = await params;
   const decodedCategory = decodeURIComponent(category).toLowerCase().trim();
-  
-  // Fetch all WP categories to find matching category details dynamically
-  const allCategories = await fetchWPCategories();
-  const matchedCategory = allCategories.find((c) => {
-    const slugLower = c.slug.toLowerCase();
-    const nameLower = c.name.toLowerCase();
-    const transliteratedName = transliterateSlug(c.name).toLowerCase();
-    return (
-      slugLower === decodedCategory ||
-      nameLower === decodedCategory ||
-      transliteratedName === decodedCategory
-    );
+
+  // 1. Try exact slug match from DB
+  let matchedCategory = await prisma.category.findUnique({
+    where: { slug: decodedCategory },
   });
 
-  // Use matching category slug or fallback to decodedCategory
-  const wpCategorySlug = matchedCategory ? matchedCategory.slug : decodedCategory;
-  const categoryDisplayName = matchedCategory ? matchedCategory.name : decodeURIComponent(category);
-  
-  // Fetch posts dynamically by category slug
-  const rawPosts = await fetchPostsByCategory(wpCategorySlug, 15);
-  const posts = rawPosts.map(mapWpPost);
+  // 2. Fallback: transliterate and search all categories
+  if (!matchedCategory) {
+    const allCategories = await prisma.category.findMany();
+    matchedCategory =
+      allCategories.find((c) => {
+        const slugLower = c.slug.toLowerCase();
+        const nameLower = c.name.toLowerCase();
+        const transliteratedName = transliterateSlug(c.name).toLowerCase();
+        const transliteratedNepali = c.nepaliName
+          ? transliterateSlug(c.nepaliName).toLowerCase()
+          : "";
+        return (
+          slugLower === decodedCategory ||
+          nameLower === decodedCategory ||
+          transliteratedName === decodedCategory ||
+          transliteratedNepali === decodedCategory
+        );
+      }) || null;
+  }
+
+  const categoryDisplayName =
+    matchedCategory?.nepaliName || matchedCategory?.name || decodeURIComponent(category);
+
+  // 3. Fetch published posts in this category from local DB
+  let posts: any[] = [];
+  if (matchedCategory) {
+    const dbPosts = await prisma.post.findMany({
+      where: {
+        status: "PUBLISHED",
+        categories: {
+          some: { categoryId: matchedCategory.id },
+        },
+      },
+      orderBy: { publishedAt: "desc" },
+      take: 20,
+      include: {
+        featuredImage: true,
+        author: { select: { name: true, image: true } },
+        categories: { include: { category: true } },
+      },
+    });
+
+    posts = dbPosts.map((p) => {
+      const primaryCat = p.categories[0]?.category;
+      return {
+        id: p.id,
+        databaseId: undefined,
+        uri: null,
+        title: p.title,
+        slug: p.slug,
+        status: p.status,
+        link: "",
+        date: (p.publishedAt || p.createdAt).toISOString(),
+        content: p.content,
+        excerpt: p.excerpt,
+        featuredImage: p.featuredImage?.url || null,
+        images: extractImagesFromContent(p.content),
+        categorySlug: primaryCat?.slug || matchedCategory!.slug,
+        categoryName: primaryCat?.nepaliName || primaryCat?.name || categoryDisplayName,
+        author: p.authorName
+          ? { node: { name: p.authorName } }
+          : p.author
+          ? { node: { name: p.author.name } }
+          : { node: { name: "expressNepal" } },
+      };
+    });
+  }
 
   return (
     <div className="w-full min-h-screen bg-white">

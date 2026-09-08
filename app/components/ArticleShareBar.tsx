@@ -23,8 +23,10 @@ export default function ArticleShareBar({
 }: ArticleShareBarProps) {
   const [currentUrl, setCurrentUrl] = useState<string>(url || "");
   const [copied, setCopied] = useState<boolean>(false);
+  const [mounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
+    setMounted(true);
     if (!url && typeof window !== "undefined") {
       setCurrentUrl(window.location.href);
     } else if (url) {
@@ -32,15 +34,14 @@ export default function ArticleShareBar({
     }
   }, [url]);
 
-  const shareUrl =
-    currentUrl || (typeof window !== "undefined" ? window.location.href : "");
+  const shareUrl = currentUrl || (mounted && typeof window !== "undefined" ? window.location.href : "");
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedTitle = encodeURIComponent(title);
   const shareLinks = {
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
-    messenger: `https://www.facebook.com/dialog/send?link=${encodedUrl}&app_id=291494419107518&redirect_uri=${encodedUrl}`,
-    whatsapp: `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`,
-    twitter: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,
+    facebook: mounted && shareUrl ? `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` : "#",
+    messenger: mounted && shareUrl ? `https://www.facebook.com/dialog/send?link=${encodedUrl}&app_id=291494419107518&redirect_uri=${encodedUrl}` : "#",
+    whatsapp: mounted && shareUrl ? `https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}` : "#",
+    twitter: mounted && shareUrl ? `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}` : "#",
   };
 
   // Function to handle sharing across platforms

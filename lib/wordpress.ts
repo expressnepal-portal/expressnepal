@@ -783,8 +783,9 @@ export async function fetchHomePagePosts(): Promise<HomePagePosts> {
       next: { revalidate: 60 },
     });
 
-    if (!response.ok) {
-      console.error(`Fetch homepage posts HTTP error: ${response.status}`);
+    const contentType = response.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      console.warn(`WordPress GraphQL returned non-JSON response (${response.status}): ${contentType}`);
       return emptyResult;
     }
 
@@ -793,7 +794,7 @@ export async function fetchHomePagePosts(): Promise<HomePagePosts> {
     try {
       json = JSON.parse(text);
     } catch (err) {
-      console.error("Failed to parse JSON response from GraphQL:", text.substring(0, 200));
+      console.warn("Failed to parse JSON response from GraphQL (CMS may be down or returning HTML maintenance page).");
       return emptyResult;
     }
 
