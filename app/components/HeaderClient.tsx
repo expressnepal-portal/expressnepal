@@ -156,12 +156,6 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
             </ul>
           </div>
 
-          {/* When scrolled: show search on the right for quick access */}
-          {scrolled && (
-            <div className="flex items-center shrink-0 ml-6">
-              <SearchDropdown variant="search" />
-            </div>
-          )}
         </div>
       </nav>
 
@@ -198,10 +192,6 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
           </button>
         </div>
 
-        {/* Mobile Search Box in Menu */}
-        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50/70">
-          <SearchDropdown variant="inline" />
-        </div>
 
         {/* Mobile Menu Navigation Items */}
         <div className="py-3 overflow-y-auto flex-1">
