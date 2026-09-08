@@ -9,28 +9,23 @@ const nextConfig = {
         pathname: "/**",
       },
       {
-        protocol: "http",
-        hostname: "cms.expressnepal.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "cms.expressnepal.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "http",
-        hostname: "cms.expressnepal.com",
-        pathname: "/**",
-      },
-      {
-        protocol: "https",
-        hostname: "cms.expressnepal.com",
-        pathname: "/**",
-      },
-      {
         protocol: "https",
         hostname: "www.expressnepal.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cms.expressnepal.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "cms.expressnepal.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
         pathname: "/**",
       },
       {
