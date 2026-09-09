@@ -6,15 +6,13 @@ import {
   getCleanContent,
   getCleanTitle,
   getPostUrl,
-  mapWpPost,
-} from "../page"
-import { fetchPosts } from "@/lib/wordpress";
+} from "../page";
+import { getPostsFromDb } from "@/lib/db-posts";
 import Card from "../components/Card";
 
 
 export default async function NewsPage() {
-  const news = await fetchPosts(10);
-  const posts = news.map(mapWpPost)
+  const posts = await getPostsFromDb(24);
 
 
   return (

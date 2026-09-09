@@ -1,4 +1,4 @@
-import { fetchAdsBanner } from "@/lib/wordpress";
+import { prisma } from "@/lib/prisma";
 
 interface BannerAdSlotProps {
   /** Index of the ad to display from active CMS ads array (default: 0) */
@@ -17,18 +17,26 @@ export default async function BannerAdSlot({
   fallbackLink = "#",
   className = "w-full max-w-4xl h-auto object-contain",
 }: BannerAdSlotProps) {
-  const ads = await fetchAdsBanner();
-  const activeAds = ads.filter((ad) => ad.active !== false);
+  let sponsors: any[] = [];
+  try {
+    sponsors = await prisma.sponsor.findMany({
+      where: { active: true },
+      orderBy: { priority: "desc" },
+      include: { bannerImage: true },
+    });
+  } catch (err) {
+    console.error("Error fetching sponsors for BannerAdSlot:", err);
+  }
 
-  const ad = activeAds[index];
+  const sponsor = sponsors[index];
 
-  if (!ad && !fallbackImage) {
+  if (!sponsor && !fallbackImage) {
     return null;
   }
 
-  const imageUrl = ad?.adImage || fallbackImage;
-  const link = ad?.link || fallbackLink;
-  const title = ad?.adTitle || ad?.title || "Advertisement";
+  const imageUrl = sponsor?.bannerImage?.url || fallbackImage;
+  const link = sponsor?.link || fallbackLink;
+  const title = sponsor?.title || "Advertisement";
 
   if (!imageUrl) return null;
 

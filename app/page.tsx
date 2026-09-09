@@ -11,11 +11,13 @@ import "./globals.css";
 import NewsImage from "./components/NewsImage";
 
 import {
-    fetchPosts,
-    fetchHomePagePosts,
-    fetchPostsByCategory,
-    type Post as WordPressPost,
-} from "@/lib/wordpress";
+    getHomepagePostsFromDb,
+    getPostsFromDb,
+    getPostsByCategoryFromDb,
+    extractImagesFromContent,
+    formatDbPost,
+} from "@/lib/db-posts";
+export { extractImagesFromContent } from "@/lib/db-posts";
 import BreakingNews from "./components/BreakingNews";
 import BreakingNewsTicker from "./components/BreakingNewsTicker";
 import SidebarAds from "./components/SidebarAds";
@@ -147,45 +149,6 @@ export function getCleanTitle(title: string | null): string {
         .trim();
 }
 
-// export function extractImagesFromContent(content: string | null): string[] {
-//   if (!content) return [];
-//   const imageUrls: string[] = [];
-//   const imgRegex = /<img[^>]+src="([^">]+)"/g;
-//   let match;
-//   while ((match = imgRegex.exec(content)) !== null)
-//     if (match[1] && match[1].startsWith("http")) imageUrls.push(match[1]);
-//   return imageUrls;
-// }
-
-export function extractImagesFromContent(content: string | null): string[] {
-    if (!content) return [];
-
-    const $ = cheerio.load(content);
-    const images: string[] = [];
-
-    $("img").each((_, img) => {
-        let src =
-            $(img).attr("data-src") ||
-            $(img).attr("data-lazy-src") ||
-            $(img).attr("src");
-
-        if (!src) return;
-
-        // ignore placeholder base64
-        if (src.startsWith("data:image")) {
-            src = $(img).attr("data-src") || $(img).attr("data-lazy-src") || "";
-        }
-
-        if (!src) return;
-
-        if (src.startsWith("//")) src = `https:${src}`;
-        if (src.startsWith("/")) src = `https://cms.expressnepal.com${src}`;
-
-        images.push(src);
-    });
-
-    return [...new Set(images)];
-}
 interface Post {
     id: string;
     databaseId?: number;
@@ -208,9 +171,10 @@ interface Post {
     } | null;
 }
 
-export function mapWpPost(post: WordPressPost): Post {
-    const primaryCat = post.categories?.nodes?.[0];
-    const catSlug = primaryCat?.slug;
+export function mapWpPost(post: any): Post {
+    if (!post) return {} as any;
+    const primaryCat = post.categories?.nodes?.[0] || post.categories?.[0];
+    const catSlug = primaryCat?.slug || post.categorySlug;
     const categorySlug =
         catSlug === "business"
             ? "economy"
@@ -221,18 +185,18 @@ export function mapWpPost(post: WordPressPost): Post {
     return {
         id: post.id,
         databaseId: post.databaseId,
-        uri: post.uri,
+        uri: post.uri || `/news/${post.slug}`,
         title: post.title,
         slug: post.slug,
         status: post.status,
-        link: post.link,
+        link: post.link || `/news/${post.slug}`,
         date: post.date,
         content: post.content,
         excerpt: post.excerpt,
-        featuredImage: post.featuredImage?.node?.sourceUrl || null,
-        images: extractImagesFromContent(post.content),
-        categorySlug: categorySlug || undefined,
-        categoryName: primaryCat?.name || "विशेष",
+        featuredImage: post.featuredImage?.node?.sourceUrl || post.featuredImage || null,
+        images: post.images || extractImagesFromContent(post.content),
+        categorySlug: categorySlug || "news",
+        categoryName: primaryCat?.name || post.categoryName || "विशेष",
         author: post.author,
     };
 }
@@ -296,8 +260,6 @@ export default async function HomePage() {
 
     // const featuredPost = initialPosts[0];
     // const secondaryPosts = initialPosts.slice(1, 4);
-    // const trendingPosts = initialPosts.slice(4, 10);
-    // const latestPosts = initialPosts.slice(10);
     const {
         featured,
         trending,
@@ -313,70 +275,62 @@ export default async function HomePage() {
         health,
         exclusive,
         technology,
-    } = await fetchHomePagePosts();
-    const Posts = await fetchPosts(10);
-    const posts = Posts.map(mapWpPost);
+    } = await getHomepagePostsFromDb();
+    const posts = await getPostsFromDb(12);
 
-    const rawExclusivePosts = await fetchPostsByCategory("exclusive", 7);
+    const rawExclusivePosts = await getPostsByCategoryFromDb("exclusive", 7);
     const exclusivePosts =
         rawExclusivePosts && rawExclusivePosts.length > 0
-            ? rawExclusivePosts.map(mapWpPost)
+            ? rawExclusivePosts
             : exclusive && exclusive.length > 0
-                ? exclusive.map(mapWpPost)
+                ? exclusive
                 : [];
 
-    // Featured hero = first economy post; secondary sidebar = next 3 economy posts
-    // (Falls back gracefully to latest posts if economy category has 0 posts in WordPress)
-    const economyPool =
-        economy && economy.length > 0
-            ? economy.map(mapWpPost)
-            : latest && latest.length > 0
-                ? latest.map(mapWpPost)
-                : posts;
+    const economyPool = economy && economy.length > 0 ? economy : [];
 
     const featuredPost = economyPool[0] || null;
     const secondaryPosts = economyPool.slice(1, 4);
 
-    const rawNewsPosts = await fetchPostsByCategory("news", 7);
-    const newsPosts = rawNewsPosts.map(mapWpPost);
-    const politicsPosts =
-        politics && politics.length > 0
-            ? politics.map(mapWpPost)
-            : latest.length > 0
-                ? latest.map(mapWpPost)
-                : posts;
-    const sportsPosts = sports && sports.length > 0 ? sports.map(mapWpPost) : [];
+    const rawNewsPosts = await getPostsByCategoryFromDb("news", 7);
+    const newsPosts =
+        rawNewsPosts.length > 0
+            ? rawNewsPosts
+            : latest && latest.length > 0
+                ? latest.slice(0, 7)
+                : [];
+    const politicsPosts = politics && politics.length > 0 ? politics : [];
+    const sportsPosts = sports && sports.length > 0 ? sports : [];
     const multimediaPosts =
-        multimedia && multimedia.length > 0 ? multimedia.map(mapWpPost) : [];
+        multimedia && multimedia.length > 0 ? multimedia : [];
     const opinionPosts =
-        opinion && opinion.length > 0 ? opinion.map(mapWpPost) : posts.slice(0, 4);
+        opinion && opinion.length > 0 ? opinion : [];
     const internationalPosts =
         international && international.length > 0
-            ? international.map(mapWpPost)
+            ? international
             : [];
-    const healthCategoryPosts = await fetchPostsByCategory(
+    const healthCategoryPosts = await getPostsByCategoryFromDb(
         "health-and-lifestyle",
         5,
     );
     const healthPostsList =
         healthCategoryPosts && healthCategoryPosts.length > 0
-            ? healthCategoryPosts.map(mapWpPost)
+            ? healthCategoryPosts
             : health && health.length > 0
-                ? health.map(mapWpPost)
+                ? health
                 : [];
-    const rawTechPosts = await fetchPostsByCategory("science-technology", 6);
+    const rawTechPosts = await getPostsByCategoryFromDb("technology", 6);
     const techPosts =
         rawTechPosts && rawTechPosts.length > 0
-            ? rawTechPosts.map(mapWpPost)
+            ? rawTechPosts
             : technology && technology.length > 0
-                ? technology.map(mapWpPost)
+                ? technology
                 : [];
-    const rawLegalPosts = await fetchPostsByCategory("legal", 6);
+    const rawLegalPosts = await getPostsByCategoryFromDb("legal", 6);
     const legalPosts =
         rawLegalPosts && rawLegalPosts.length > 0
-            ? rawLegalPosts.map(mapWpPost)
+            ? rawLegalPosts
             : legal && legal.length > 0
-                ? legal.map(mapWpPost).slice(0, 6)
+                ? legal.slice(0, 6)
                 : [];
     return (
         <div
@@ -1251,7 +1205,9 @@ export default async function HomePage() {
                                     const contentImages = extractImagesFromContent(post.content);
                                     const featuredImageUrl = post.featuredImage;
                                     const thumbnailImage =
-                                        featuredImageUrl ?? contentImages[0] ?? undefined;
+                                        typeof featuredImageUrl === "string"
+                                            ? featuredImageUrl
+                                            : (featuredImageUrl as any)?.node?.sourceUrl || contentImages[0] || undefined;
                                     const authorName = post.author?.node?.name?.trim();
                                     const displayAuthor =
                                         authorName && authorName.toLowerCase() !== "news"
@@ -1268,7 +1224,7 @@ export default async function HomePage() {
                                             <div className="relative w-full aspect-video bg-gray-800 overflow-hidden">
                                                 {thumbnailImage && (
                                                     <img
-                                                        src={thumbnailImage}
+                                                        src={String(thumbnailImage)}
                                                         alt={getCleanTitle(post.title)}
                                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                     />

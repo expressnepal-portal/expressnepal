@@ -1,8 +1,8 @@
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-import { searchPosts, fetchPosts } from "@/lib/wordpress";
-import { extractImagesFromContent, getCleanContent, getCleanTitle, getPostUrl, mapWpPost } from "../page";
+import { searchPostsFromDb, getPostsFromDb } from "@/lib/db-posts";
+import { extractImagesFromContent, getCleanContent, getCleanTitle, getPostUrl } from "../page";
 import Card from "../components/Card";
 
 export default async function SearchPage({
@@ -13,9 +13,8 @@ export default async function SearchPage({
   const { q } = await searchParams;
   const query = q || "";
 
-  // Fetch search results from WP GraphQL if query exists,else recent posts
-  const rawPosts = query ? await searchPosts(query, 30) : await fetchPosts(24);
-  const posts = rawPosts.map(mapWpPost);
+  // Fetch search results from Neon DB if query exists, else recent posts
+  const posts = query ? await searchPostsFromDb(query, 30) : await getPostsFromDb(24);
 
   return (
     <div className="w-full min-h-screen bg-white">

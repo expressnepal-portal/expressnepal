@@ -4,16 +4,16 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 interface NewsImageProps {
   post: {
-    id: string;
-    title: string | null;
-    featuredImage?: string | null;
-    content: string | null;
-    images?: string[];
-  };
+    id?: string;
+    title?: string | null;
+    featuredImage?: any;
+    content?: string | null;
+    images?: any[];
+  } | any;
   className: string;
   fallbackGradient: string;
   isFeatured?: boolean;
-  images?: string[]; // External images prop
+  images?: any[]; // External images prop
 }
 
 // Function to extract ALL images from post content

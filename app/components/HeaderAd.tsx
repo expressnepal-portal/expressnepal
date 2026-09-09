@@ -1,19 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { fetchAdsBanner } from "@/lib/wordpress";
-import { BannerAd } from "@/lib/type";
 import Link from "next/link";
 
 export default function HeaderWithAds() {
-  const [ads, setAds] = useState<BannerAd[]>([]);
+  const [ads, setAds] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchAds = async () => {
-      const data = await fetchAdsBanner();
-      setAds(data);
-      setLoading(false);
+      try {
+        const res = await fetch("/api/sponsors");
+        if (res.ok) {
+          const data = await res.json();
+          setAds(data || []);
+        }
+      } catch (err) {
+        console.error("Error loading header ads:", err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchAds();
@@ -22,6 +28,9 @@ export default function HeaderWithAds() {
   if (loading || ads.length === 0) return null;
 
   const ad = ads[0];
+  const imageUrl = ad.bannerImage?.url || ad.adImage || "";
+
+  if (!imageUrl) return null;
 
   return (
     <div className="w-full bg-gray-100 py-2 ">
@@ -33,8 +42,8 @@ export default function HeaderWithAds() {
       >
         <div className="w-full overflow-hidden rounded-lg">
           <img
-            src={ad.adImage || ""}
-            alt={ad.adTitle || ad.title}
+            src={imageUrl}
+            alt={ad.title || "Header Ad"}
             className="w-full max-h-[100px] object-contain"
           />
         </div>
