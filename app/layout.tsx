@@ -8,14 +8,89 @@ import { MobileMenuProvider } from "./components/MobileMenuContext";
 import BannerAdsTop from "./components/BannersAdsTop";
 import { headers } from "next/headers";
 
-export const metadata: Metadata = {
-    title: "Express Nepal",
-    description: " Local Breaking news, business, weather, and things to do",
-    icons: {
-        icon: "/logo.png",
-        apple: "/logo.png",
+import { prisma } from "@/lib/prisma";
+
+export async function generateMetadata(): Promise<Metadata> {
+  let settings = null;
+  try {
+    settings = await prisma.setting.findFirst({
+      include: {
+        logoImage: true,
+        faviconImage: true,
+      },
+    });
+  } catch (e) {
+    console.error("Error fetching settings for metadata:", e);
+  }
+
+  const title = settings?.siteName || "Express Nepal";
+  const description = settings?.siteDescription || "Local Breaking news, business, weather, and things to do in Nepal";
+  const faviconUrl = settings?.faviconImage?.url || "/logo.png";
+  const logoUrl = settings?.logoImage?.url || "/logo.png";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.expressnepal.com";
+
+  return {
+    metadataBase: new URL(baseUrl),
+    title: {
+      default: `${title} - ताजा समाचार, विचार र विश्लेषण`,
+      template: `%s | ${title}`,
     },
-};
+    description,
+    keywords: [
+      title,
+      "Nepali News",
+      "ताजा समाचार",
+      "नेपाल समाचार",
+      "Breaking News Nepal",
+      "Politics Nepal",
+      "Nepal Economy",
+      "Online Khabar Nepal",
+    ],
+    authors: [{ name: title }],
+    creator: title,
+    publisher: title,
+    icons: {
+      icon: faviconUrl,
+      apple: faviconUrl,
+    },
+    alternates: {
+      canonical: baseUrl,
+    },
+    openGraph: {
+      type: "website",
+      locale: "ne_NP",
+      url: baseUrl,
+      siteName: title,
+      title: `${title} - ताजा समाचार र विचार`,
+      description,
+      images: [
+        {
+          url: logoUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} - ताजा समाचार र विचार`,
+      description,
+      images: [logoUrl],
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
+    },
+  };
+}
 
 const poppins = Poppins({
     subsets: ["latin"],

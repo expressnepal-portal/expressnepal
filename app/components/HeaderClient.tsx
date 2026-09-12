@@ -19,9 +19,11 @@ const playfair = Playfair_Display({
 
 interface HeaderClientProps {
   categories: Category[];
+  logoUrl?: string | null;
+  siteName?: string;
 }
 
-export default function HeaderClient({ categories }: HeaderClientProps) {
+export default function HeaderClient({ categories, logoUrl, siteName = "Express Nepal" }: HeaderClientProps) {
   const pathname = usePathname() || "";
   const { mobileMenuOpen, setMobileMenuOpen } = useMobileMenu();
   const [scrolled, setScrolled] = React.useState(false);
@@ -38,6 +40,8 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const activeLogo = logoUrl || "/logo.png";
+
   return (
     <header className="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300">
       {/* TOP UTILITY & LOGO BAR (Hides on scroll > 80px) */}
@@ -48,17 +52,6 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
             : "max-h-60 opacity-100 py-1.5 sm:py-2"
         }`}
       >
-        {/* Date & Location (Top utility line) - 3-column grid for perfect alignment */}
-    {/*
-<div className="w-full grid grid-cols-3 items-center border-b border-gray-100 pb-1 mb-1.5 text-xs tracking-wider text-gray-500 uppercase font-medium">
-  <span className="hidden sm:block text-left">Kathmandu, Nepal</span>
-  <div className="col-span-3 sm:col-span-1 text-center">
-    <NepaliDateTime />
-  </div>
-  <span className="hidden sm:block text-right">English / नेपाली</span>
-</div>
-*/}
-
         {/* Logo Masthead */}
         <div className={`flex items-center justify-between w-full px-4 sm:px-6 ${scrolled ? "py-1.5" : "py-3"} relative`}>
           {/* Left: User / Sign In Icon */}
@@ -70,12 +63,13 @@ export default function HeaderClient({ categories }: HeaderClientProps) {
           <div className="flex flex-col items-center justify-center text-center">
             <Link href="/" className="transition-transform duration-200 hover:scale-[1.01] inline-block">
               <Image
-                src="/logo.png"
+                src={activeLogo}
                 width={360}
                 height={90}
-                alt="Express Nepal Logo"
+                alt={`${siteName} Logo`}
                 className={scrolled ? "h-7 sm:h-9 md:h-10 lg:h-11 w-auto object-contain" : "h-9 sm:h-12 md:h-14 lg:h-16 w-auto object-contain"}
                 priority
+                unoptimized={activeLogo.startsWith("http")}
               />
             </Link>
             {!scrolled && (

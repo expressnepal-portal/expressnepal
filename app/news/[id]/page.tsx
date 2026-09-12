@@ -259,7 +259,7 @@ export async function generateMetadata({
 
   const cleanTitle = getCleanTitle(post.title);
   const rawContent = post.content || "";
-  const cleanDescription = getCleanContent(rawContent, 160);
+  const cleanDescription = post.excerpt || getCleanContent(rawContent, 160);
 
   const contentImages = extractImagesFromContent(rawContent);
   const featuredImageUrl = post.featuredImage?.url || undefined;
@@ -268,15 +268,30 @@ export async function generateMetadata({
     (contentImages.length > 0 ? contentImages[0] : undefined);
 
   const images = heroImage ? [{ url: heroImage }] : [];
+  const primaryCategory = post.categories?.[0]?.category;
+  const categorySlug = category || primaryCategory?.slug || "news";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.expressnepal.com";
+  const canonicalUrl = `${baseUrl}/${categorySlug}/${post.slug}`;
+  const publishedTime = (post.publishedAt || post.createdAt).toISOString();
+  const modifiedTime = (post.updatedAt || post.publishedAt || post.createdAt).toISOString();
+  const authorName = post.authorName || post.author?.name || "Express Nepal";
 
   return {
     title: `${cleanTitle} - Express Nepal`,
     description: cleanDescription,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: cleanTitle,
       description: cleanDescription,
       type: "article",
+      url: canonicalUrl,
       siteName: "Express Nepal",
+      publishedTime,
+      modifiedTime,
+      authors: [authorName],
+      section: primaryCategory?.nepaliName || primaryCategory?.name || "समाचार",
       images: images,
     },
     twitter: {
@@ -355,14 +370,47 @@ export default async function NewsSlugPage({
     ? post.authorName
     : post.author?.name && post.author.name.toLowerCase() !== "news"
     ? post.author.name
-    : "expressNepal";
+    : "Express Nepal";
 
-  const postUrl = `https://www.expressnepal.com/news/${post.slug}`;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.expressnepal.com";
+  const postUrl = `${baseUrl}/news/${post.slug}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: getCleanTitle(post.title),
+    description: post.excerpt || getCleanContent(post.content, 160),
+    image: heroImage ? [heroImage] : [],
+    datePublished: dateStr,
+    dateModified: (post.updatedAt || post.publishedAt || post.createdAt).toISOString(),
+    author: [
+      {
+        "@type": "Person",
+        name: authorDisplay,
+      },
+    ],
+    publisher: {
+      "@type": "NewsMediaOrganization",
+      name: "Express Nepal",
+      url: baseUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: `${baseUrl}/logo.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": postUrl,
+    },
+  };
 
   return (
     <div
       className={`${inter.className} min-h-screen text-nepal-black w-full bg-white`}
     >
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <main
         className="w-full flex items-center justify-center pt-3 lg:pt-4"
         style={{ paddingTop: "var(--header-height)" }}

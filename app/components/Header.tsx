@@ -20,15 +20,29 @@ export const DEFAULT_NAVBAR_CATEGORIES: Category[] = [
 
 export default async function Header() {
   let categories: Category[] = DEFAULT_NAVBAR_CATEGORIES;
+  let logoUrl: string | null = null;
+  let siteName: string = "Express Nepal";
 
   try {
-    const dbMenuItems = await prisma.menuItem.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-      include: {
-        category: true,
-      },
-    });
+    const [dbMenuItems, settings] = await Promise.all([
+      prisma.menuItem.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+        include: {
+          category: true,
+        },
+      }),
+      prisma.setting.findFirst({
+        include: {
+          logoImage: true,
+        },
+      }),
+    ]);
+
+    if (settings) {
+      if (settings.siteName) siteName = settings.siteName;
+      if (settings.logoImage?.url) logoUrl = settings.logoImage.url;
+    }
 
     if (dbMenuItems && dbMenuItems.length > 0) {
       categories = [
@@ -44,5 +58,5 @@ export default async function Header() {
     console.error("Using default categories for header:", error);
   }
 
-  return <HeaderClient categories={categories} />;
+  return <HeaderClient categories={categories} logoUrl={logoUrl} siteName={siteName} />;
 }

@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -39,14 +38,14 @@ model User {
 }
 
 model Category {
-  id           String         @id @default(cuid())
-  name         String // English / slug identifier
-  nepaliName   String? // Nepali display text (e.g. "समाचार", "राजनीति")
-  slug         String         @unique
-  menuOrder    Int            @default(0)
-  posts        PostCategory[]
-  sponsors     Sponsor[]
-  menuItems    MenuItem[]
+  id         String         @id @default(cuid())
+  name       String // English / slug identifier
+  nepaliName String? // Nepali display text (e.g. "समाचार", "राजनीति")
+  slug       String         @unique
+  menuOrder  Int            @default(0)
+  posts      PostCategory[]
+  sponsors   Sponsor[]
+  menuItems  MenuItem[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -55,20 +54,20 @@ model Category {
 }
 
 model MenuItem {
-  id         String    @id @default(cuid())
-  label      String // English / general label
-  nepaliLabel String? // Devanagari display label (e.g. "समाचार", "गृहपृष्ठ")
-  url        String // Target URL (e.g. "/", "/news", "/opinion", "https://...")
-  order      Int       @default(0)
-  isActive   Boolean   @default(true)
+  id           String  @id @default(cuid())
+  label        String // English / general label
+  nepaliLabel  String? // Devanagari display label (e.g. "समाचार", "गृहपृष्ठ")
+  url          String // Target URL (e.g. "/", "/news", "/opinion", "https://...")
+  order        Int     @default(0)
+  isActive     Boolean @default(true)
   openInNewTab Boolean @default(false)
 
   // Optional category connection
   categoryId String?
   category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([order, isActive])
   @@map("menu_items")
@@ -77,6 +76,7 @@ model MenuItem {
 model Post {
   id      String     @id @default(cuid())
   title   String
+  date    String?
   slug    String     @unique
   excerpt String?
   content String     @db.Text
@@ -86,6 +86,7 @@ model Post {
   isBreaking Boolean @default(false)
   isFeatured Boolean @default(false)
   viewCount  Int     @default(0)
+  highlight  String?  @db.Text
 
   // Cloudinary Featured Image Relation
   featuredImageId String?
@@ -175,7 +176,9 @@ model Media {
   posts    Post[]
   sponsors Sponsor[]
 
-  createdAt DateTime @default(now())
+  createdAt       DateTime         @default(now())
+  logoSettings    Setting[]        @relation("SiteLogo")
+  faviconSettings Setting[]        @relation("SiteFavicon")
 
   @@map("media")
 }
@@ -242,4 +245,18 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Setting {
+  id              String   @id @default(cuid())
+  logoImageId     String?
+  logoImage       Media?   @relation("SiteLogo", fields: [logoImageId], references: [id])
+  faviconImageId  String?
+  faviconImage    Media?   @relation("SiteFavicon", fields: [faviconImageId], references: [id])
+  siteName        String   @default("Express Nepal")
+  siteDescription String   @default("Nepal's leading news portal")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("settings")
 }

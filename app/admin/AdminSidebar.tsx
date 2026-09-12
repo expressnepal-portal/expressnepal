@@ -19,6 +19,7 @@ import {
   Menu,
   X,
   ChevronRight,
+  Settings,
 } from "lucide-react";
 
 const navItems = [
@@ -31,6 +32,7 @@ const navItems = [
   { href: "/admin/import", label: "Import Data", icon: DownloadCloud },
   { href: "/admin/pages", label: "Static Pages", icon: FileCode },
   { href: "/admin/users", label: "Users & Roles", icon: Users },
+  { href: "/admin/settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminSidebar({
