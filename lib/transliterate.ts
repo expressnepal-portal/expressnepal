@@ -202,6 +202,11 @@ export function transliterateSlug(slug: string): string {
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
+  // Cap length to 100 chars to avoid exceeding standard URL limits
+  if (processed.length > 100) {
+    processed = processed.slice(0, 100).replace(/-[^-]*$/, "");
+  }
+
   return processed;
 }
 
