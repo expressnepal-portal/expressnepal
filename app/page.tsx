@@ -337,7 +337,12 @@ export default async function HomePage() {
             className={`${inter.className} min-h-screen text-nepal-black overflow-x-hidden w-full gradient-white-to-orange`}
         >
             {/* Breaking News Ticker - Rasuwa Flood Update */}
-            <BreakingNewsTicker />
+            <BreakingNewsTicker
+                headlines={breaking.length > 0 ? breaking.map((item: any) => ({
+                    title: getCleanTitle(item.title),
+                    link: getPostUrl(item),
+                })) : undefined}
+            />
 
             {/* Jasmine Banner Ad */}
             <div className="w-full flex justify-center py-3 md:py-5 bg-white">
@@ -578,8 +583,9 @@ export default async function HomePage() {
                 <div className="pt-2 md:pt-4 w-full max-w-[1920px] mx-auto px-mobile-safe">
                     {breaking.slice(0, 3).map((item, index) => {
                         const contentImages = extractImagesFromContent(item.content);
-                        const featuredImageUrl = item.featuredImage?.node?.sourceUrl;
-                        const thumbnailImage =
+                        const rawFeatured = item.featuredImage;
+                        const featuredImageUrl = typeof rawFeatured === "string" ? rawFeatured : (rawFeatured as any)?.node?.sourceUrl ?? undefined;
+                        const thumbnailImage: string | undefined =
                             featuredImageUrl ?? contentImages[0] ?? undefined;
                         const excerpt = getCleanContent(item.excerpt || item.content, 180);
 

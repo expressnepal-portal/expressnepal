@@ -5,7 +5,7 @@ import { createPost, updatePost, type ActionState } from "./action";
 import RichTextEditor from "./RichTextEditor";
 import ImageUpload from "../components/ImageUpload";
 import { transliterateSlug } from "@/lib/transliterate";
-import { Sparkles, User as UserIcon, Hash } from "lucide-react";
+import { Sparkles, User as UserIcon, Hash, Zap, Star } from "lucide-react";
 
 interface AuthorUser {
   id: string;
@@ -34,6 +34,8 @@ interface PostFormProps {
       url: string;
       alt?: string | null;
     } | null;
+    isBreaking?: boolean;
+    isFeatured?: boolean;
   };
 }
 
@@ -59,6 +61,8 @@ export function PostForm({
   const [featuredImageId, setFeaturedImageId] = useState<string>(
     post?.featuredImageId || ""
   );
+  const [isBreaking, setIsBreaking] = useState(post?.isBreaking || false);
+  const [isFeatured, setIsFeatured] = useState(post?.isFeatured || false);
 
   const toggleCategory = (id: string) => {
     setSelectedCategoryIds((prev) =>
@@ -153,6 +157,68 @@ export function PostForm({
               <option value="DRAFT">Draft</option>
               <option value="PUBLISHED">Published</option>
             </select>
+          </div>
+
+          {/* NEWS BADGES & PLACEMENT */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-3">
+              News Badges & Placement
+            </label>
+            <div className="space-y-3">
+              {/* Breaking News Toggle */}
+              <label
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${
+                  isBreaking
+                    ? "bg-red-50 border border-red-200"
+                    : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  name="isBreaking"
+                  value="true"
+                  checked={isBreaking}
+                  onChange={(e) => setIsBreaking(e.target.checked)}
+                  className="rounded border-gray-300 text-red-600 focus:ring-red-500"
+                />
+                <Zap className={`w-4 h-4 ${isBreaking ? "text-red-600" : "text-gray-400"}`} />
+                <div className="flex-1">
+                  <span className={`text-sm font-semibold ${isBreaking ? "text-red-700" : "text-gray-700"}`}>
+                    Breaking News
+                  </span>
+                  <p className="text-[10px] text-gray-500 mt-0.5">
+                    Shows in the Breaking News ticker bar & hero section
+                  </p>
+                </div>
+              </label>
+
+              {/* Featured News Toggle */}
+              <label
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-colors ${
+                  isFeatured
+                    ? "bg-amber-50 border border-amber-200"
+                    : "bg-gray-50 border border-gray-200 hover:bg-gray-100"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  name="isFeatured"
+                  value="true"
+                  checked={isFeatured}
+                  onChange={(e) => setIsFeatured(e.target.checked)}
+                  className="rounded border-gray-300 text-amber-600 focus:ring-amber-500"
+                />
+                <Star className={`w-4 h-4 ${isFeatured ? "text-amber-600" : "text-gray-400"}`} />
+                <div className="flex-1">
+                  <span className={`text-sm font-semibold ${isFeatured ? "text-amber-700" : "text-gray-700"}`}>
+                    Featured / विशेष
+                  </span>
+                  <p className="text-[10px] text-gray-500 mt-0.5">
+                    Shows in the Featured / Exclusive hero section
+                  </p>
+                </div>
+              </label>
+            </div>
           </div>
 
           {/* Author Space (Registered Member or Manual Custom Author) */}

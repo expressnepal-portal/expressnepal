@@ -41,12 +41,12 @@ model Category {
   id         String         @id @default(cuid())
   name       String // English / slug identifier
   nepaliName String? // Nepali display text (e.g. "समाचार", "राजनीति")
+  description String? @db.Text
   slug       String         @unique
   menuOrder  Int            @default(0)
   posts      PostCategory[]
   sponsors   Sponsor[]
   menuItems  MenuItem[]
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -186,8 +186,14 @@ model Media {
 model StaticPage {
   id        String   @id @default(cuid())
   title     String
-  slug      String   @unique
   content   String   @db.Text
+  slug      String   @unique
+  excerpt   String?  @default("")
+  metaTitle String?
+  metaDescription String?
+  metaKeywords String?
+  topMenu   Boolean  @default(false)
+  footerMenu Boolean  @default(false)
   menuOrder Int      @default(0)
   isFooter  Boolean  @default(false)
   isNavbar  Boolean  @default(false)
@@ -196,6 +202,7 @@ model StaticPage {
 
   @@map("static_pages")
 }
+
 
 model Session {
   id             String   @id
@@ -260,3 +267,5 @@ model Setting {
 
   @@map("settings")
 }
+
+

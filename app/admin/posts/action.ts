@@ -32,6 +32,8 @@ export async function createPost(
   const status = (formData.get("status") as "DRAFT" | "PUBLISHED") || "DRAFT";
   const authorId = (formData.get("authorId") as string)?.trim() || null;
   const authorName = (formData.get("authorName") as string)?.trim() || null;
+  const isBreaking = formData.get("isBreaking") === "true";
+  const isFeatured = formData.get("isFeatured") === "true";
 
   if (!title) return { error: "Title is required" };
   if (!content) return { error: "Content is required" };
@@ -53,6 +55,8 @@ export async function createPost(
         content,
         excerpt,
         status,
+        isBreaking,
+        isFeatured,
         authorName: authorName || undefined,
         featuredImage: featuredImageId ? { connect: { id: featuredImageId } } : undefined,
         author: authorId ? { connect: { id: authorId } } : undefined,
@@ -92,6 +96,8 @@ export async function updatePost(
   const authorId = (formData.get("authorId") as string)?.trim() || null;
   const authorName = (formData.get("authorName") as string)?.trim() || null;
   const rawSlug = (formData.get("slug") as string)?.trim();
+  const isBreaking = formData.get("isBreaking") === "true";
+  const isFeatured = formData.get("isFeatured") === "true";
 
   if (!title || !content) {
     return { error: "Title and content are required" };
@@ -120,6 +126,8 @@ export async function updatePost(
         content,
         excerpt,
         status,
+        isBreaking,
+        isFeatured,
         authorName: authorName || null,
         author: authorId ? { connect: { id: authorId } } : { disconnect: true },
         featuredImage: featuredImageId ? { connect: { id: featuredImageId } } : { disconnect: true },

@@ -51,6 +51,8 @@ export default async function EditPostPage({
           categoryIds: post.categories.map((c) => c.categoryId),
           featuredImageId: post.featuredImageId,
           featuredImage: post.featuredImage,
+          isBreaking: post.isBreaking,
+          isFeatured: post.isFeatured,
         }}
         categories={categories}
         users={users}
