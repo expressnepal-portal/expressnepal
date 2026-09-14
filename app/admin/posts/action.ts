@@ -34,6 +34,9 @@ export async function createPost(
   const authorName = (formData.get("authorName") as string)?.trim() || null;
   const isBreaking = formData.get("isBreaking") === "true";
   const isFeatured = formData.get("isFeatured") === "true";
+  const highlight = (formData.get("highlight") as string)?.trim() || null;
+  const metaTitle = (formData.get("metaTitle") as string)?.trim() || null;
+  const metaDescription = (formData.get("metaDescription") as string)?.trim() || null;
 
   if (!title) return { error: "Title is required" };
   if (!content) return { error: "Content is required" };
@@ -54,6 +57,9 @@ export async function createPost(
         slug,
         content,
         excerpt,
+        highlight,
+        metaTitle,
+        metaDescription,
         status,
         isBreaking,
         isFeatured,
@@ -90,6 +96,9 @@ export async function updatePost(
   const title = (formData.get("title") as string)?.trim();
   const content = (formData.get("content") as string)?.trim();
   const excerpt = (formData.get("excerpt") as string) || null;
+  const highlight = (formData.get("highlight") as string)?.trim() || null;
+  const metaTitle = (formData.get("metaTitle") as string)?.trim() || null;
+  const metaDescription = (formData.get("metaDescription") as string)?.trim() || null;
   const featuredImageId = (formData.get("featuredImageId") as string) || null;
   const categoryIds = formData.getAll("categoryIds") as string[];
   const status = (formData.get("status") as "DRAFT" | "PUBLISHED") || "DRAFT";
@@ -125,6 +134,9 @@ export async function updatePost(
         slug,
         content,
         excerpt,
+        highlight,
+        metaTitle,
+        metaDescription,
         status,
         isBreaking,
         isFeatured,

@@ -456,6 +456,38 @@ export default async function NewsSlugPage({
                   </div>
                 )}
 
+                {/* News Summary Box (OK AI Style) */}
+                {(() => {
+                  const hasEmbeddedSummary = cleanedContent.includes("express-news-summary");
+                  const postHighlights = post.highlight
+                    ? post.highlight
+                        .split(/\r?\n/)
+                        .map((h: string) => h.replace(/^[•\-\*\s]+/, "").trim())
+                        .filter((h: string) => h.length > 5)
+                    : [];
+
+                  if (!hasEmbeddedSummary && postHighlights.length > 0) {
+                    return (
+                      <div className="express-news-summary mb-6">
+                        <div className="summary-header">
+                          <div className="summary-title-wrap">
+                            <h4 className="summary-title">News Summary</h4>
+                          </div>
+                          <span className="summary-badge">
+                            Editorially reviewed.
+                          </span>
+                        </div>
+                        <ul>
+                          {postHighlights.map((bullet: string, idx: number) => (
+                            <li key={idx}>{bullet}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
                 <div
                   className="prose prose-lg md:prose-xl max-w-none text-gray-800 font-poppins
                     prose-p:text-base prose-p:sm:text-lg prose-p:md:text-xl prose-p:leading-[1.9]

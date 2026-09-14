@@ -20,10 +20,12 @@ import {
   X,
   ChevronRight,
   Settings,
+  Newspaper,
 } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/ai-agent", label: "News Studio", icon: Newspaper },
   { href: "/admin/posts", label: "Articles", icon: FileText },
   { href: "/admin/categories", label: "Categories", icon: FolderOpen },
   { href: "/admin/menu", label: "Navigation Menu", icon: Compass },

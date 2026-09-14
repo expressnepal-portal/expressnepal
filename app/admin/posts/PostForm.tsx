@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useActionState } from "react";
+import React, { useState, useEffect, useActionState } from "react";
+import Link from "next/link";
 import { createPost, updatePost, type ActionState } from "./action";
 import RichTextEditor from "./RichTextEditor";
 import ImageUpload from "../components/ImageUpload";
 import { transliterateSlug } from "@/lib/transliterate";
-import { Sparkles, User as UserIcon, Hash, Zap, Star } from "lucide-react";
+import { User as UserIcon, Hash, Zap, Star, Globe, CheckCircle2, Newspaper } from "lucide-react";
 
 interface AuthorUser {
   id: string;
@@ -23,6 +24,9 @@ interface PostFormProps {
     slug: string;
     content: string;
     excerpt: string | null;
+    highlight?: string | null;
+    metaTitle?: string | null;
+    metaDescription?: string | null;
     status: string;
     authorId?: string | null;
     authorName?: string | null;
@@ -48,6 +52,11 @@ export function PostForm({
   const [title, setTitle] = useState(post?.title || "");
   const [slug, setSlug] = useState(post?.slug || "");
   const [content, setContent] = useState(post?.content || "");
+  const [excerpt, setExcerpt] = useState(post?.excerpt || "");
+  const [highlight, setHighlight] = useState(post?.highlight || "");
+  const [metaTitle, setMetaTitle] = useState(post?.metaTitle || "");
+  const [metaDescription, setMetaDescription] = useState(post?.metaDescription || "");
+
   const [authorMode, setAuthorMode] = useState<"user" | "custom">(
     post?.authorName ? "custom" : "user"
   );
@@ -63,6 +72,37 @@ export function PostForm({
   );
   const [isBreaking, setIsBreaking] = useState(post?.isBreaking || false);
   const [isFeatured, setIsFeatured] = useState(post?.isFeatured || false);
+  const [importedFromAi, setImportedFromAi] = useState(false);
+
+  // Check if loaded from AI Studio
+  useEffect(() => {
+    if (typeof window !== "undefined" && !post) {
+      try {
+        const aiDraft = sessionStorage.getItem("ai_draft_post");
+        if (aiDraft) {
+          const parsed = JSON.parse(aiDraft);
+          if (parsed.title) setTitle(parsed.title);
+          if (parsed.content) setContent(parsed.content);
+          if (parsed.excerpt) setExcerpt(parsed.excerpt);
+          if (parsed.slug) setSlug(parsed.slug);
+          if (parsed.isBreaking !== undefined) setIsBreaking(Boolean(parsed.isBreaking));
+          if (parsed.categoryIds && Array.isArray(parsed.categoryIds)) {
+            setSelectedCategoryIds(parsed.categoryIds);
+          }
+          if (parsed.metaTitle) setMetaTitle(parsed.metaTitle);
+          if (parsed.metaDescription) setMetaDescription(parsed.metaDescription);
+          if (parsed.highlights && Array.isArray(parsed.highlights)) {
+            setHighlight(parsed.highlights.map((h: string) => `• ${h}`).join("\n"));
+          }
+
+          setImportedFromAi(true);
+          sessionStorage.removeItem("ai_draft_post");
+        }
+      } catch (err) {
+        console.error("Failed to load AI draft:", err);
+      }
+    }
+  }, [post]);
 
   const toggleCategory = (id: string) => {
     setSelectedCategoryIds((prev) =>
@@ -84,6 +124,25 @@ export function PostForm({
 
   return (
     <form action={formAction} className="space-y-6">
+      {/* AI Draft Banner notification if populated */}
+      {importedFromAi && (
+        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs rounded-xl flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>
+              <strong>AI News Studio बाट समाचार सफलतापूर्वक लोड भयो!</strong> शीर्षक, सामग्री, बुँदाहरू र एसईओ मेटा सेट गरिएको छ। तल तस्बिर राखेर प्रकाशित गर्नुहोस्।
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setImportedFromAi(false)}
+            className="text-emerald-700 hover:text-emerald-950 font-bold ml-2 cursor-pointer"
+          >
+            ×
+          </button>
+        </div>
+      )}
+
       {state?.error && (
         <div className="p-3.5 bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl">
           {state.error}
@@ -94,6 +153,20 @@ export function PostForm({
       <div className="flex flex-col xl:flex-row gap-6">
         {/* Left: Main content */}
         <div className="flex-1 space-y-5">
+          {/* Top Quick News Studio Banner */}
+          <div className="bg-gradient-to-r from-red-50 via-rose-50 to-amber-50 border border-red-100 rounded-xl p-3.5 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-semibold text-gray-800">
+              <Newspaper className="w-4 h-4 text-nepal-red" />
+              <span>विदेशी वा अन्य समाचारलाई नेपालीमा पुनर्लेखन गर्न चाहनुहुन्छ?</span>
+            </div>
+            <Link
+              href="/admin/ai-agent"
+              className="text-xs bg-nepal-red hover:bg-red-700 text-white font-medium px-3 py-1.5 rounded-lg flex items-center gap-1 transition-colors shadow-xs"
+            >
+              <span>News Studio खोल्नुहोस्</span>
+            </Link>
+          </div>
+
           {/* Title */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -112,13 +185,33 @@ export function PostForm({
             />
           </div>
 
+          {/* Highlights (मुख्य बुँदाहरू) */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+                Key Highlights / मुख्य बुँदाहरू (Bullet Points)
+              </label>
+              <span className="text-[11px] text-gray-400">वैकल्पिक / Optional</span>
+            </div>
+            <textarea
+              name="highlight"
+              rows={3}
+              value={highlight}
+              onChange={(e) => setHighlight(e.target.value)}
+              placeholder="• मुख्य बुँदा १&#10;• मुख्य बुँदा २&#10;• मुख्य बुँदा ३"
+              className="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-nepal-red bg-white text-gray-800 resize-y"
+              style={{ fontFamily: '"Noto Sans Devanagari", "Poppins", sans-serif' }}
+            />
+          </div>
+
           {/* Rich Text Editor */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-1.5">
               Content (समाचार सामग्री)
             </label>
             <RichTextEditor
-              initialContent={post?.content || ""}
+              key={content ? "editor-with-content" : "editor-empty"}
+              initialContent={content}
               onChange={setContent}
             />
             {/* Hidden input to capture HTML for server action */}
@@ -333,11 +426,44 @@ export function PostForm({
             <textarea
               name="excerpt"
               rows={3}
-              defaultValue={post?.excerpt || ""}
+              value={excerpt}
+              onChange={(e) => setExcerpt(e.target.value)}
               className="w-full px-3 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:border-nepal-red text-sm resize-none"
               placeholder="Short summary..."
               style={{ fontFamily: '"Noto Sans Devanagari", "Poppins", sans-serif' }}
             />
+          </div>
+
+          {/* SEO Metadata Box */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5 space-y-3">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+              SEO Meta Settings
+            </label>
+            <div>
+              <span className="text-[11px] font-medium text-gray-500 block mb-1">
+                SEO Meta Title:
+              </span>
+              <input
+                name="metaTitle"
+                value={metaTitle}
+                onChange={(e) => setMetaTitle(e.target.value)}
+                placeholder="Google Search Title..."
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs"
+              />
+            </div>
+            <div>
+              <span className="text-[11px] font-medium text-gray-500 block mb-1">
+                SEO Meta Description:
+              </span>
+              <textarea
+                name="metaDescription"
+                rows={2}
+                value={metaDescription}
+                onChange={(e) => setMetaDescription(e.target.value)}
+                placeholder="Short meta description for search engines..."
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-xs resize-none"
+              />
+            </div>
           </div>
 
           {/* Categories (Single or Multiple) */}
@@ -417,15 +543,15 @@ export function PostForm({
             </div>
           )}
 
-          {/* Featured Image */}
+          {/* Featured Image (Manual Upload by User) */}
           <div className="bg-white border border-gray-200 rounded-xl p-5">
             <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600 mb-2">
-              Featured Image
+              Featured Image / मुख्य तस्बिर
             </label>
             <ImageUpload
               currentUrl={post?.featuredImage?.url}
               onUpload={(media) => setFeaturedImageId(media.id)}
-              label="Drop featured image here"
+              label="तस्बिर यहाँ ड्रप वा अपलोड गर्नुहोस्"
             />
             <input
               type="hidden"
