@@ -402,7 +402,7 @@ export function PostForm({
                 className="text-xs text-nepal-red hover:text-red-700 font-medium flex items-center gap-1 cursor-pointer transition-colors"
                 title="Convert Nepali title to Roman English URL"
               >
-                <Sparkles className="w-3 h-3" />
+                <Globe className="w-3 h-3" />
                 Auto Romanize
               </button>
             </div>
